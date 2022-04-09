@@ -1,0 +1,3 @@
+[submodule "module/Nexus-Plugin-Components"]
+	path = module/Nexus-Plugin-Components
+	url = https://github.com/TheNexusAvenger/Nexus-Plugin-Components
