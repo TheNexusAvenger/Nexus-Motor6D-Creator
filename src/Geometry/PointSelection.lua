@@ -9,6 +9,7 @@ local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
 
 local NexusPluginFramework = require(script.Parent.Parent:WaitForChild("NexusPluginComponents"))
+local GetMouseTarget = require(script.Parent.Parent:WaitForChild("Util"):WaitForChild("GetMouseTarget"))
 
 local PointSelection = NexusPluginFramework:GetResource("NexusInstance.NexusInstance"):Extend()
 PointSelection:SetClassName("PointSelection")
@@ -66,7 +67,7 @@ end
 --[[
 Static function for prompting for a CFrame.
 --]]
-function PointSelection.PromptForCFrame(): CFrame
+function PointSelection.PromptForCFrame(): CFrame?
     local Selection = PointSelection.new()
     local SelectedCFrame = Selection:PromptSelection()
     Selection:Destroy()
@@ -164,7 +165,7 @@ end
 --[[
 Prompts for a CFrame selection.
 --]]
-function PointSelection:PromptSelection(): CFrame
+function PointSelection:PromptSelection(): CFrame?
     --Connect updating the mouse.
     table.insert(self.Events, UserInputService.InputChanged:Connect(function(Input)
         if Input.UserInputType ~= Enum.UserInputType.MouseMovement then return end
@@ -175,40 +176,8 @@ function PointSelection:PromptSelection(): CFrame
             return
         end
 
-        --Get the position to raycast to.
-        local MouseRay = Workspace.CurrentCamera:ScreenPointToRay(Input.Position.X, Input.Position.Y, 10000)
-        local RawEndPosition = MouseRay.Origin + MouseRay.Direction
-        local StartPosition = Workspace.CurrentCamera.CFrame.Position
-        local EndPosition = (RawEndPosition - Workspace.CurrentCamera.CFrame.Position).Unit * 10000
-
-        --Update the selected adorn part.
-        local IgnoreList = {}
-        local RaycastResult = nil
-        local RaycastParameters = RaycastParams.new()
-        RaycastParameters.FilterType = Enum.RaycastFilterType.Blacklist
-        RaycastParameters.FilterDescendantsInstances = IgnoreList
-        RaycastParameters.IgnoreWater = true
-        repeat
-            --Perform the raycast.
-            RaycastResult = Workspace:Raycast(StartPosition, EndPosition - StartPosition, RaycastParameters)
-            if not RaycastResult then
-                break
-            end
-            if not RaycastResult.Instance then
-                break
-            end
-            local HitPart = RaycastResult.Instance
-            if HitPart.Transparency < 1 then
-                break
-            end
-
-            --Add the hit to the ignore list and allow it to retry.
-            table.insert(IgnoreList, HitPart)
-            RaycastParameters.FilterDescendantsInstances = IgnoreList
-        until RaycastResult == nil
-
         --Update the selection.
-        local NewAdorn = RaycastResult and RaycastResult.Instance
+        local NewAdorn = GetMouseTarget(Input.Position.X, Input.Position.Y)
         self:SetAdornPart(NewAdorn)
         self:UpdateSelectedFrame(Input.Position.X, Input.Position.Y)
     end))
