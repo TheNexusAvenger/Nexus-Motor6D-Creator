@@ -55,23 +55,23 @@ function Motor6DVisual:__new()
     Part1RotatingAdorn.Adornee = CenterPart
     Part1RotatingAdorn.Parent = Motor6DVisualContainer
 
-   local RotationDirection1 = Instance.new("ConeHandleAdornment")
-   RotationDirection1.AlwaysOnTop = true
-   RotationDirection1.ZIndex = 0
-   RotationDirection1.Radius = 0.25
-   RotationDirection1.Height = 1
-   RotationDirection1.Color3 = Color3.new(0, 1, 0)
-   RotationDirection1.Adornee = CenterPart
-   RotationDirection1.Parent = Motor6DVisualContainer
+    local RotationDirection1 = Instance.new("ConeHandleAdornment")
+    RotationDirection1.AlwaysOnTop = true
+    RotationDirection1.ZIndex = 0
+    RotationDirection1.Radius = 0.25
+    RotationDirection1.Height = 1
+    RotationDirection1.Color3 = Color3.new(0, 1, 0)
+    RotationDirection1.Adornee = CenterPart
+    RotationDirection1.Parent = Motor6DVisualContainer
 
-   local RotationDirection2 = Instance.new("ConeHandleAdornment")
-   RotationDirection2.AlwaysOnTop = true
-   RotationDirection2.ZIndex = 0
-   RotationDirection2.Radius = 0.25
-   RotationDirection2.Height = 1
-   RotationDirection2.Color3 = Color3.new(0, 1, 0)
-   RotationDirection2.Adornee = CenterPart
-   RotationDirection2.Parent = Motor6DVisualContainer
+    local RotationDirection2 = Instance.new("ConeHandleAdornment")
+    RotationDirection2.AlwaysOnTop = true
+    RotationDirection2.ZIndex = 0
+    RotationDirection2.Radius = 0.25
+    RotationDirection2.Height = 1
+    RotationDirection2.Color3 = Color3.new(0, 1, 0)
+    RotationDirection2.Adornee = CenterPart
+    RotationDirection2.Parent = Motor6DVisualContainer
 
     --Store the visual values.
     self.StartCFrame = CFrame.new()
