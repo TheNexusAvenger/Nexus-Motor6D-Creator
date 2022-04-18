@@ -40,5 +40,5 @@ return function(X: number, Y: number): BasePart?
     until RaycastResult == nil
 
     --Return the result.
-    return RaycastResult and RaycastResult.Instance
+    return RaycastResult and RaycastResult.Instance.Locked ~= true and RaycastResult.Instance
 end
