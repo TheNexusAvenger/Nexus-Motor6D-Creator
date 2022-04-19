@@ -82,38 +82,27 @@ function Motor6DView:__new()
     RotationYSlider.MaximumValue = 180
     RotationYSlider.Parent = self
 
-    local RotationZSlider = SliderRowProperty.new()
-    RotationZSlider.Position = UDim2.new(0, 0, 0, 23 * 10)
-    RotationZSlider.Text = "Z Axis"
-    RotationZSlider.MinimumValue = -180
-    RotationZSlider.MaximumValue = 180
-    RotationZSlider.Parent = self
-
     --Create the toggle for local/global rotation.
     local LocalSpaceCheckbox = NexusPluginFramework.new("Checkbox")
     LocalSpaceCheckbox.Size = UDim2.new(0, 13, 0, 13)
-    LocalSpaceCheckbox.Position = UDim2.new(0, 4, 0, (23 * 11) + 4)
+    LocalSpaceCheckbox.Position = UDim2.new(0, 4, 0, (23 * 10) + 4)
     LocalSpaceCheckbox.Value = "Checked"
     LocalSpaceCheckbox.Parent = self
 
     local LocalSpaceText = NexusPluginFramework.new("TextLabel")
     LocalSpaceText.Size = UDim2.new(0, 200, 0, 13)
-    LocalSpaceText.Position = UDim2.new(0, 24, 0, (23 * 11) + 4)
+    LocalSpaceText.Position = UDim2.new(0, 24, 0, (23 * 10) + 4)
     LocalSpaceText.Text = "Rotation relative to selected pivot"
     LocalSpaceText.Parent = self
 
     --Create the slider toggle buttons.
     local XAxisButtons = RotationButtonRow.new("X Axis", RotationXSlider)
-    XAxisButtons.Position = UDim2.new(0, 0, 0, 280)
+    XAxisButtons.Position = UDim2.new(0, 0, 0, 260)
     XAxisButtons.Parent = self
 
     local YAxisButtons = RotationButtonRow.new("Y Axis", RotationYSlider)
-    YAxisButtons.Position = UDim2.new(0, 0, 0, 280 + (24 * 1))
+    YAxisButtons.Position = UDim2.new(0, 0, 0, 260 + (24 * 1))
     YAxisButtons.Parent = self
-
-    local ZAxisButtons = RotationButtonRow.new("Z Axis", RotationZSlider)
-    ZAxisButtons.Position = UDim2.new(0, 0, 0, 280 + (24 * 2))
-    ZAxisButtons.Parent = self
 
     --Create the lower buttons.
     local CreateButton = NexusPluginFramework.new("TextButton")
@@ -121,7 +110,7 @@ function Motor6DView:__new()
     CreateButton.BorderColor3 = Enum.StudioStyleGuideColor.DialogButtonBorder
     CreateButton.Size = UDim2.new(0, 90, 0, 22)
     CreateButton.AnchorPoint = Vector2.new(0.5, 0)
-    CreateButton.Position = UDim2.new(0.3, 0, 0, 370)
+    CreateButton.Position = UDim2.new(0.3, 0, 0, 350)
     CreateButton.Text = "Create"
     CreateButton.TextColor3 = Enum.StudioStyleGuideColor.DialogMainButtonText
     CreateButton.Parent = self
@@ -131,7 +120,7 @@ function Motor6DView:__new()
     SelectPivotButton.BorderColor3 = Enum.StudioStyleGuideColor.DialogButtonBorder
     SelectPivotButton.Size = UDim2.new(0, 90, 0, 22)
     SelectPivotButton.AnchorPoint = Vector2.new(0.5, 0)
-    SelectPivotButton.Position = UDim2.new(0.7, 0, 0, 370)
+    SelectPivotButton.Position = UDim2.new(0.7, 0, 0, 350)
     SelectPivotButton.Text = "Select Pivot"
     SelectPivotButton.TextColor3 = Enum.StudioStyleGuideColor.DialogButtonText
     SelectPivotButton.Parent = self
@@ -151,8 +140,6 @@ function Motor6DView:__new()
     self.RotationXSlider = RotationXSlider
     self:DisableChangeReplication("RotationYSlider")
     self.RotationYSlider = RotationYSlider
-    self:DisableChangeReplication("RotationZSlider")
-    self.RotationZSlider = RotationZSlider
     self:DisableChangeReplication("LocalSpaceCheckbox")
     self.LocalSpaceCheckbox = LocalSpaceCheckbox
     self:DisableChangeReplication("Preview")
@@ -257,7 +244,7 @@ function Motor6DView:UpdatePreview()
 
     --Update the preview.
     local Pivot = PivotPart.CFrame * CFrame.new(PivotPart.Size * Vector3.new(self.PositionXSlider.Value, self.PositionYSlider.Value, self.PositionZSlider.Value))
-    local Rotation = CFrame.Angles(math.rad(self.RotationXSlider.Value), math.rad(self.RotationYSlider.Value), math.rad(self.RotationZSlider.Value))
+    local Rotation = CFrame.Angles(math.rad(self.RotationXSlider.Value), math.rad(self.RotationYSlider.Value), 0)
     if self.LocalSpaceCheckbox.Value ~= "Checked" then
         Pivot = CFrame.new(Pivot.Position)
     end
