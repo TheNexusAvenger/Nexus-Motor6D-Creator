@@ -123,7 +123,7 @@ function Motor6DView:__new()
     CreateButton.BorderColor3 = Enum.StudioStyleGuideColor.DialogButtonBorder
     CreateButton.Size = UDim2.new(0, 90, 0, 22)
     CreateButton.AnchorPoint = Vector2.new(0.5, 0)
-    CreateButton.Position = UDim2.new(0.3, 0, 0, 390)
+    CreateButton.Position = UDim2.new(0.3, 0, 0, 370)
     CreateButton.Text = "Create"
     CreateButton.TextColor3 = Enum.StudioStyleGuideColor.DialogMainButtonText
     CreateButton.Parent = self
@@ -133,7 +133,7 @@ function Motor6DView:__new()
     SelectPivotButton.BorderColor3 = Enum.StudioStyleGuideColor.DialogButtonBorder
     SelectPivotButton.Size = UDim2.new(0, 90, 0, 22)
     SelectPivotButton.AnchorPoint = Vector2.new(0.5, 0)
-    SelectPivotButton.Position = UDim2.new(0.7, 0, 0, 390)
+    SelectPivotButton.Position = UDim2.new(0.7, 0, 0, 370)
     SelectPivotButton.Text = "Select Pivot"
     SelectPivotButton.TextColor3 = Enum.StudioStyleGuideColor.DialogButtonText
     SelectPivotButton.Parent = self
@@ -141,13 +141,13 @@ function Motor6DView:__new()
     --Create the checkbox for setting the desired angle to the max.
     local MaxAngleCheckbox = NexusPluginFramework.new("Checkbox")
     MaxAngleCheckbox.Size = UDim2.new(0, 13, 0, 13)
-    MaxAngleCheckbox.Position = UDim2.new(0, 4, 0, 420)
+    MaxAngleCheckbox.Position = UDim2.new(0, 4, 0, 400)
     MaxAngleCheckbox.Value = "Unchecked"
     MaxAngleCheckbox.Parent = self
 
     local MaxAngleText = NexusPluginFramework.new("TextLabel")
     MaxAngleText.Size = UDim2.new(0, 200, 0, 13)
-    MaxAngleText.Position = UDim2.new(0, 24, 0, 420)
+    MaxAngleText.Position = UDim2.new(0, 24, 0, 400)
     MaxAngleText.Text = "Set the desired angle to spin forever."
     MaxAngleText.Parent = self
 
