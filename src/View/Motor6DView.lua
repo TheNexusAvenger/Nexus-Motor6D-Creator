@@ -82,26 +82,39 @@ function Motor6DView:__new()
     RotationYSlider.MaximumValue = 180
     RotationYSlider.Parent = self
 
+    --Create the motor property rows.
+    local MotorPropertiesHeader = Header.new()
+    MotorPropertiesHeader.Position = UDim2.new(0, 0, 0, 23 * 10)
+    MotorPropertiesHeader.Text = "Motor"
+    MotorPropertiesHeader.Parent = self
+
+    local MaxVelocitySlider = SliderRowProperty.new()
+    MaxVelocitySlider.Position = UDim2.new(0, 0, 0, 23 * 11)
+    MaxVelocitySlider.Text = "MaxVelocity"
+    MaxVelocitySlider.MinimumValue = 0
+    MaxVelocitySlider.MaximumValue = 0.25
+    MaxVelocitySlider.Parent = self
+
     --Create the toggle for local/global rotation.
     local LocalSpaceCheckbox = NexusPluginFramework.new("Checkbox")
     LocalSpaceCheckbox.Size = UDim2.new(0, 13, 0, 13)
-    LocalSpaceCheckbox.Position = UDim2.new(0, 4, 0, (23 * 10) + 4)
+    LocalSpaceCheckbox.Position = UDim2.new(0, 4, 0, (23 * 12) + 4)
     LocalSpaceCheckbox.Value = "Checked"
     LocalSpaceCheckbox.Parent = self
 
     local LocalSpaceText = NexusPluginFramework.new("TextLabel")
     LocalSpaceText.Size = UDim2.new(0, 200, 0, 13)
-    LocalSpaceText.Position = UDim2.new(0, 24, 0, (23 * 10) + 4)
-    LocalSpaceText.Text = "Rotation relative to selected pivot"
+    LocalSpaceText.Position = UDim2.new(0, 24, 0, (23 * 12) + 4)
+    LocalSpaceText.Text = "Rotation relative to selected pivot."
     LocalSpaceText.Parent = self
 
     --Create the slider toggle buttons.
     local XAxisButtons = RotationButtonRow.new("X Axis", RotationXSlider)
-    XAxisButtons.Position = UDim2.new(0, 0, 0, 260)
+    XAxisButtons.Position = UDim2.new(0, 0, 0, 300)
     XAxisButtons.Parent = self
 
     local YAxisButtons = RotationButtonRow.new("Y Axis", RotationYSlider)
-    YAxisButtons.Position = UDim2.new(0, 0, 0, 260 + (24 * 1))
+    YAxisButtons.Position = UDim2.new(0, 0, 0, 300 + (24 * 1))
     YAxisButtons.Parent = self
 
     --Create the lower buttons.
@@ -110,7 +123,7 @@ function Motor6DView:__new()
     CreateButton.BorderColor3 = Enum.StudioStyleGuideColor.DialogButtonBorder
     CreateButton.Size = UDim2.new(0, 90, 0, 22)
     CreateButton.AnchorPoint = Vector2.new(0.5, 0)
-    CreateButton.Position = UDim2.new(0.3, 0, 0, 350)
+    CreateButton.Position = UDim2.new(0.3, 0, 0, 390)
     CreateButton.Text = "Create"
     CreateButton.TextColor3 = Enum.StudioStyleGuideColor.DialogMainButtonText
     CreateButton.Parent = self
@@ -120,10 +133,23 @@ function Motor6DView:__new()
     SelectPivotButton.BorderColor3 = Enum.StudioStyleGuideColor.DialogButtonBorder
     SelectPivotButton.Size = UDim2.new(0, 90, 0, 22)
     SelectPivotButton.AnchorPoint = Vector2.new(0.5, 0)
-    SelectPivotButton.Position = UDim2.new(0.7, 0, 0, 350)
+    SelectPivotButton.Position = UDim2.new(0.7, 0, 0, 390)
     SelectPivotButton.Text = "Select Pivot"
     SelectPivotButton.TextColor3 = Enum.StudioStyleGuideColor.DialogButtonText
     SelectPivotButton.Parent = self
+
+    --Create the checkbox for setting the desired angle to the max.
+    local MaxAngleCheckbox = NexusPluginFramework.new("Checkbox")
+    MaxAngleCheckbox.Size = UDim2.new(0, 13, 0, 13)
+    MaxAngleCheckbox.Position = UDim2.new(0, 4, 0, 420)
+    MaxAngleCheckbox.Value = "Unchecked"
+    MaxAngleCheckbox.Parent = self
+
+    local MaxAngleText = NexusPluginFramework.new("TextLabel")
+    MaxAngleText.Size = UDim2.new(0, 200, 0, 13)
+    MaxAngleText.Position = UDim2.new(0, 24, 0, 420)
+    MaxAngleText.Text = "Set the desired angle to spin forever."
+    MaxAngleText.Parent = self
 
     --Add the custom properties.
     self:DisableChangeReplication("Part0Property")
@@ -140,6 +166,8 @@ function Motor6DView:__new()
     self.RotationXSlider = RotationXSlider
     self:DisableChangeReplication("RotationYSlider")
     self.RotationYSlider = RotationYSlider
+    self:DisableChangeReplication("MaxVelocitySlider")
+    self.MaxVelocitySlider = MaxVelocitySlider
     self:DisableChangeReplication("LocalSpaceCheckbox")
     self.LocalSpaceCheckbox = LocalSpaceCheckbox
     self:DisableChangeReplication("Preview")
@@ -216,6 +244,8 @@ function Motor6DView:__new()
                 Motor6D.Part1 = Part1:GetWrappedInstance()
                 Motor6D.C0 = self.Preview.C0
                 Motor6D.C1 = self.Preview.C1
+                Motor6D.MaxVelocity = MaxVelocitySlider.Value
+                Motor6D.DesiredAngle = (MaxAngleCheckbox.Value == "Checked" and 2 ^ 1000 or 0)
                 Motor6D.Parent = Motor6D.Part0
             end
             CreateDB = true
@@ -252,6 +282,7 @@ function Motor6DView:UpdatePreview()
     self.Preview.StartCFrame = Part0.CFrame
     self.Preview.C0 = Part0.CFrame:Inverse() * Pivot
     self.Preview.C1 = Part1.CFrame:Inverse() * Pivot
+    self.Preview.Velocity = self.MaxVelocitySlider.Value
 end
 
 
