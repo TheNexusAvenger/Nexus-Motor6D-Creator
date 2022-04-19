@@ -110,6 +110,27 @@ function Motor6DView:__new()
     local ZAxisButtons = RotationButtonRow.new("Z Axis", RotationZSlider)
     ZAxisButtons.Position = UDim2.new(0, 0, 0, 280 + (24 * 2))
     ZAxisButtons.Parent = self
+
+    --Create the lower buttons.
+    local CreateButton = NexusPluginFramework.new("TextButton")
+    CreateButton.BackgroundColor3 = Enum.StudioStyleGuideColor.DialogMainButton
+    CreateButton.BorderColor3 = Enum.StudioStyleGuideColor.DialogButtonBorder
+    CreateButton.Size = UDim2.new(0, 90, 0, 22)
+    CreateButton.AnchorPoint = Vector2.new(0.5, 0)
+    CreateButton.Position = UDim2.new(0.3, 0, 0, 370)
+    CreateButton.Text = "Create"
+    CreateButton.TextColor3 = Enum.StudioStyleGuideColor.DialogMainButtonText
+    CreateButton.Parent = self
+
+    local SetPivotButton = NexusPluginFramework.new("TextButton")
+    SetPivotButton.BackgroundColor3 = Enum.StudioStyleGuideColor.DialogButton
+    SetPivotButton.BorderColor3 = Enum.StudioStyleGuideColor.DialogButtonBorder
+    SetPivotButton.Size = UDim2.new(0, 90, 0, 22)
+    SetPivotButton.AnchorPoint = Vector2.new(0.5, 0)
+    SetPivotButton.Position = UDim2.new(0.7, 0, 0, 370)
+    SetPivotButton.Text = "Select Pivot"
+    SetPivotButton.TextColor3 = Enum.StudioStyleGuideColor.DialogButtonText
+    SetPivotButton.Parent = self
 end
 
 
