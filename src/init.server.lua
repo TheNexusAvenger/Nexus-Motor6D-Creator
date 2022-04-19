@@ -13,18 +13,18 @@ local Motor6DWindow = require(script:WaitForChild("View"):WaitForChild("Motor6DW
 local MotorView = Motor6DWindow.new(plugin)
 
 --Create the toolbar.
-local NexusMotor6DCreatorToolbar = plugin:CreateToolbar("Nexus Motor6D Creator")
-local NexusMotor6DCreatorButton = NexusMotor6DCreatorToolbar:CreateButton("Motor6D Creator", "Opens the window for creating Motor6Ds.", "") --TODO: Add icon.
+local Motor6DCreatorToolbar = plugin:CreateToolbar("Motor6D Creator")
+local Motor6DCreatorButton = Motor6DCreatorToolbar:CreateButton("Motor6D Creator", "Opens the window for creating Motor6Ds.", "rbxassetid://9414272825")
 if MotorView.Enabled then
-    NexusMotor6DCreatorButton:SetActive(true)
+    Motor6DCreatorButton:SetActive(true)
 end
 
 --Connect the toolbar.
 MotorView:GetPropertyChangedSignal("Enabled"):Connect(function()
-    NexusMotor6DCreatorButton:SetActive(MotorView.Enabled)
+    Motor6DCreatorButton:SetActive(MotorView.Enabled)
 end)
 
-NexusMotor6DCreatorButton.Click:Connect(function()
+Motor6DCreatorButton.Click:Connect(function()
     --Show the window.
     MotorView.Enabled = true
 
