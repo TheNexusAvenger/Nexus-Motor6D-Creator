@@ -154,18 +154,20 @@ function Motor6DView:__new()
                 --Get the selection.
                 local SelectionCFrame = NewSelection:PromptSelection()
                 local SelectionPart = NewSelection.LastPart
-                if CurrentSelection ~= CurrentSelection then return end
+                if NewSelection ~= CurrentSelection then return end
 
                 --Update the sliders.
-                local RelativeCFrame = SelectionPart.CFrame:Inverse() * SelectionCFrame
-                PositionXSlider.Value = RelativeCFrame.X / SelectionPart.Size.X
-                PositionYSlider.Value = RelativeCFrame.Y / SelectionPart.Size.Y
-                PositionZSlider.Value = RelativeCFrame.Z / SelectionPart.Size.Z
-                self.PivotPart = SelectionPart
+                if SelectionCFrame and SelectionPart then
+                    local RelativeCFrame = SelectionPart.CFrame:Inverse() * SelectionCFrame
+                    PositionXSlider.Value = RelativeCFrame.X / SelectionPart.Size.X
+                    PositionYSlider.Value = RelativeCFrame.Y / SelectionPart.Size.Y
+                    PositionZSlider.Value = RelativeCFrame.Z / SelectionPart.Size.Z
+                    self.PivotPart = SelectionPart
+                end
 
                 --Clear the selection.
-                if CurrentSelection then
-                    CurrentSelection:Destroy()
+                if NewSelection then
+                    NewSelection:Destroy()
                 end
             end)
             SelectPivotDB = true
