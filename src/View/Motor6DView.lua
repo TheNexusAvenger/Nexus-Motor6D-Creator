@@ -323,7 +323,7 @@ function Motor6DView:UpdatePreview()
         self.Preview.Enabled = false
         return
     end
-    self.Preview.Enabled = true
+    self.Preview.Enabled = (self.Parent and self.Parent.Enabled)
 
     --Update the preview.
     local Pivot = PivotPart.CFrame * CFrame.new(PivotPart.Size * Vector3.new(self.PositionXSlider.Value, self.PositionYSlider.Value, self.PositionZSlider.Value))
