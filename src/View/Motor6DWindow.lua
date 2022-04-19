@@ -25,6 +25,8 @@ function Motor6DWindow:__new(Plugin: Plugin)
     View.Size = UDim2.new(1, -2, 1, -2)
     View.Position = UDim2.new(0, 1, 0, 1)
     View.Parent = self
+    self:DisableChangeReplication("View")
+    self.View = View
 end
 
 
