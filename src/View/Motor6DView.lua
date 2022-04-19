@@ -4,12 +4,15 @@ TheNexusAvenger
 View for editting Motor6D properties.
 --]]
 
+local RunService = game:GetService("RunService")
+
 local NexusPluginFramework = require(script.Parent.Parent:WaitForChild("NexusPluginComponents"))
 local Header = require(script.Parent:WaitForChild("Row"):WaitForChild("Header"))
 local InstanceRowProperty = require(script.Parent:WaitForChild("Row"):WaitForChild("InstanceRowProperty"))
 local RotationButtonRow = require(script.Parent:WaitForChild("Row"):WaitForChild("RotationButtonRow"))
 local SliderRowProperty = require(script.Parent:WaitForChild("Row"):WaitForChild("SliderRowProperty"))
 local PointSelection = require(script.Parent.Parent:WaitForChild("Geometry"):WaitForChild("PointSelection"))
+local Motor6DVisual = require(script.Parent.Parent:WaitForChild("Geometry"):WaitForChild("Motor6DVisual"))
 
 local Motor6DView = NexusPluginFramework:GetResource("Base.PluginInstance"):Extend()
 Motor6DView:SetClassName("Motor6DView")
@@ -134,7 +137,42 @@ function Motor6DView:__new()
     SelectPivotButton.Parent = self
 
     --Add the custom properties.
+    self:DisableChangeReplication("Part0Property")
+    self.Part0Property = Part0PropertyRow
+    self:DisableChangeReplication("Part1Property")
+    self.Part1Property = Part1PropertyRow
+    self:DisableChangeReplication("PositionXSlider")
+    self.PositionXSlider = PositionXSlider
+    self:DisableChangeReplication("PositionYSlider")
+    self.PositionYSlider = PositionYSlider
+    self:DisableChangeReplication("PositionZSlider")
+    self.PositionZSlider = PositionZSlider
+    self:DisableChangeReplication("RotationXSlider")
+    self.RotationXSlider = RotationXSlider
+    self:DisableChangeReplication("RotationYSlider")
+    self.RotationYSlider = RotationYSlider
+    self:DisableChangeReplication("RotationZSlider")
+    self.RotationZSlider = RotationZSlider
+    self:DisableChangeReplication("LocalSpaceCheckbox")
+    self.LocalSpaceCheckbox = LocalSpaceCheckbox
+    self:DisableChangeReplication("Preview")
+    self.Preview = Motor6DVisual.new()
     self:DisableChangeReplication("PivotPart")
+
+    --Connect updating the pivot part.
+    local LastPart0, LastPart1 = nil, nil
+    Part0PropertyRow:GetPropertyChangedSignal("Value"):Connect(function()
+        if self.PivotPart and self.PivotPart == LastPart0 then
+            self.PivotPart = Part0PropertyRow.Value
+        end
+        LastPart0 = Part0PropertyRow.Value
+    end)
+    Part1PropertyRow:GetPropertyChangedSignal("Value"):Connect(function()
+        if not self.PivotPart or (self.PivotPart and self.PivotPart == LastPart1) then
+            self.PivotPart = Part1PropertyRow.Value
+        end
+        LastPart1 = Part1PropertyRow.Value
+    end)
 
     --Connect the buttons.
     local SelectPivotDB = true
@@ -173,6 +211,37 @@ function Motor6DView:__new()
             SelectPivotDB = true
         end
     end)
+
+    --Update the preview.
+    RunService.RenderStepped:Connect(function()
+        self:UpdatePreview()
+    end)
+end
+
+--[[
+Updates the Motor6D preview.
+--]]
+function Motor6DView:UpdatePreview()
+    --Hide the preview if the Part0 or Part1 are not defined.
+    local Part0 = self.Part0Property.Value
+    local Part1 = self.Part1Property.Value
+    local PivotPart = self.PivotPart
+    if not Part0 or not Part1 or not PivotPart then
+        self.Preview.Enabled = false
+        return
+    end
+    self.Preview.Enabled = true
+
+    --Update the preview.
+    local Pivot = PivotPart.CFrame
+    local Rotation = CFrame.Angles(math.rad(self.RotationXSlider.Value), math.rad(self.RotationYSlider.Value), math.rad(self.RotationZSlider.Value)) * CFrame.new(PivotPart.Size * Vector3.new(self.PositionXSlider.Value, self.PositionYSlider.Value, self.PositionZSlider.Value))
+    if self.LocalSpaceCheckbox.Value ~= "Checked" then
+        Pivot = CFrame.new(Pivot.Position)
+    end
+    Pivot = Pivot * Rotation
+    self.Preview.StartCFrame = Part0.CFrame
+    self.Preview.C0 = Part0.CFrame:Inverse() * Pivot
+    self.Preview.C1 = Part1.CFrame:Inverse() * Pivot
 end
 
 

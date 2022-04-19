@@ -78,6 +78,7 @@ function Motor6DVisual:__new()
     self.C0 = CFrame.new()
     self.C1 = CFrame.new()
     self.Velocity = 0
+    self.Enabled = true
 
     --Set up updating.
     self.UpdateEvent = RunService.RenderStepped:Connect(function()
@@ -85,6 +86,12 @@ function Motor6DVisual:__new()
         local Velocity = (self.Velocity == 0 and 0.05 or self.Velocity)
         local Rotation = tick() * 60 * Velocity
         local BaseRotationCFrame = self.C0 * CFrame.Angles(0, 0, Rotation % (math.pi * 2))
+
+        Part0Adorn.Visible = self.Enabled
+        Part1StaticAdorn.Visible = self.Enabled
+        Part1RotatingAdorn.Visible = self.Enabled
+        RotationDirection1.Visible = self.Enabled
+        RotationDirection2.Visible = self.Enabled
 
         CenterPart.CFrame = self.StartCFrame
         Part0Adorn.CFrame = CFrame.new(Vector3.zero, self.C0.Position) * CFrame.new(0, 0, -self.C0.Position.Magnitude / 2)
