@@ -12,6 +12,8 @@ local SliderRowProperty = require(script.Parent:WaitForChild("Row"):WaitForChild
 local Motor6DView = NexusPluginFramework:GetResource("Base.PluginInstance"):Extend()
 Motor6DView:SetClassName("Motor6DView")
 
+
+
 --[[
 Creates the Motor6D view.
 --]]
@@ -58,7 +60,7 @@ function Motor6DView:__new()
     --Create the rotation property rows.
     local RotationPropertiesHeader = Header.new()
     RotationPropertiesHeader.Position = UDim2.new(0, 0, 0, 23 * 7)
-    RotationPropertiesHeader.Text = "Rotation"
+    RotationPropertiesHeader.Text = "Rotation Offset"
     RotationPropertiesHeader.Parent = self
 
     local RotationXSlider = SliderRowProperty.new()
@@ -81,6 +83,19 @@ function Motor6DView:__new()
     RotationZSlider.MinimumValue = -180
     RotationZSlider.MaximumValue = 180
     RotationZSlider.Parent = self
+
+    --Create the toggle for local/global rotation.
+    local LocalSpaceCheckbox = NexusPluginFramework.new("Checkbox")
+    LocalSpaceCheckbox.Size = UDim2.new(0, 13, 0, 13)
+    LocalSpaceCheckbox.Position = UDim2.new(0, 4, 0, (23 * 11) + 4)
+    LocalSpaceCheckbox.Value = "Checked"
+    LocalSpaceCheckbox.Parent = self
+
+    local LocalSpaceText = NexusPluginFramework.new("TextLabel")
+    LocalSpaceText.Size = UDim2.new(0, 200, 0, 13)
+    LocalSpaceText.Position = UDim2.new(0, 24, 0, (23 * 11) + 4)
+    LocalSpaceText.Text = "Rotation relative to selected pivot"
+    LocalSpaceText.Parent = self
 end
 
 
