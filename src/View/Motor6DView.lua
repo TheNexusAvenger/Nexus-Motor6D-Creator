@@ -172,6 +172,8 @@ function Motor6DView:__new()
     self.MaxVelocitySlider = MaxVelocitySlider
     self:DisableChangeReplication("LocalSpaceCheckbox")
     self.LocalSpaceCheckbox = LocalSpaceCheckbox
+    self:DisableChangeReplication("MaxAngleCheckbox")
+    self.MaxAngleCheckbox = MaxAngleCheckbox
     self:DisableChangeReplication("Preview")
     self.Preview = Motor6DVisual.new()
     self.Preview:GetPropertyChangedSignal("Enabled"):Connect(function()
@@ -256,7 +258,9 @@ function Motor6DView:__new()
                 self.CurrentMotor.C0 = self.Preview.C0
                 self.CurrentMotor.C1 = self.Preview.C1
                 self.CurrentMotor.MaxVelocity = MaxVelocitySlider.Value
-                self.CurrentMotor.DesiredAngle = (MaxAngleCheckbox.Value == "Checked" and 2 ^ 1000 or 0)
+                if MaxAngleCheckbox.Value == "Checked" then
+                    self.CurrentMotor.DesiredAngle = 2 ^ 1000
+                end
                 ChangeHistoryService:SetWaypoint("NexusMotor6DCreatorAfterSetMotor")
             end
             CreateDB = true
@@ -324,6 +328,68 @@ function Motor6DView:UpdatePreview()
     self.Preview.C0 = Part0.CFrame:Inverse() * Pivot
     self.Preview.C1 = Part1.CFrame:Inverse() * Pivot
     self.Preview.Velocity = self.MaxVelocitySlider.Value
+end
+
+--[[
+Loads 2 parts.
+--]]
+function Motor6DView:LoadParts(Part0: Part?, Part1: Part?)
+    --Update the selected motor.
+    if Part0 and Part1 then
+        for _, Motor6D in pairs(Workspace:GetDescendants()) do
+            if Motor6D:IsA("Motor6D") then
+                if (Motor6D.Part0 == Part0 and Motor6D.Part1 == Part1) or (Motor6D.Part0 == Part1 and Motor6D.Part1 == Part0) then
+                    self.CurrentMotor = Motor6D
+                    Part0 = Motor6D.Part0
+                    Part1 = Motor6D.Part1
+                    break
+                end
+            end
+        end
+    end
+
+    --Set the part selection values.
+    self.Part0Property.Value = Part0
+    self.Part1Property.Value = Part1
+
+    --Set the sliders.
+    local CurrentMotor = self.CurrentMotor
+    if self.CurrentMotor then
+        --Determine the relative part.
+        local PivotPart = nil
+        local PivotCFrame = Part0.CFrame * CurrentMotor.C0
+        local PivotRelativePosition0 = (Part0.CFrame:Inverse() * PivotCFrame).Position / Part0.Size
+        local PivotRelativePosition1 = (Part1.CFrame:Inverse() * PivotCFrame).Position / Part1.Size
+        if math.abs(PivotRelativePosition1.X) <= 0.5 and math.abs(PivotRelativePosition1.Y) <= 0.5 and math.abs(PivotRelativePosition1.Z) <= 0.5 then
+            PivotPart = Part1
+        elseif math.abs(PivotRelativePosition0.X) <= 0.5 and math.abs(PivotRelativePosition0.Y) <= 0.5 and math.abs(PivotRelativePosition0.Z) <= 0.5 then
+            PivotPart = Part0
+        else
+            PivotPart = Part1
+        end
+
+        --Set the sliders.
+        local PivotRelativeCFrame = PivotPart.CFrame:Inverse() * PivotCFrame
+        local AngleX, AngleY, _ = PivotRelativeCFrame:ToEulerAnglesXYZ()
+        self.PositionXSlider.Value = PivotRelativeCFrame.X / PivotPart.Size.X
+        self.PositionYSlider.Value = PivotRelativeCFrame.Y / PivotPart.Size.Y
+        self.PositionZSlider.Value = PivotRelativeCFrame.Z / PivotPart.Size.Z
+        self.RotationXSlider.Value = math.deg(AngleX)
+        self.RotationYSlider.Value = math.deg(AngleY)
+        self.MaxVelocitySlider.Value = CurrentMotor.MaxVelocity
+        self.PivotPart = PivotPart
+    else
+        --Reset the sliders.
+        self.PositionXSlider.Value = 0
+        self.PositionYSlider.Value = 0
+        self.PositionZSlider.Value = 0
+        self.RotationXSlider.Value = 0
+        self.RotationYSlider.Value = 0
+        self.MaxVelocitySlider.Value = 0
+        self.PivotPart = Part1
+    end
+    self.LocalSpaceCheckbox.Value = "Checked"
+    self.MaxAngleCheckbox.Value = "Unchecked"
 end
 
 
