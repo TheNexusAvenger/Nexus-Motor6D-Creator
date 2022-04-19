@@ -55,6 +55,25 @@ function Motor6DVisual:__new()
     Part1RotatingAdorn.Adornee = CenterPart
     Part1RotatingAdorn.Parent = Motor6DVisualContainer
 
+    local OuterRotationCircle = Instance.new("CylinderHandleAdornment")
+    OuterRotationCircle.Name = "OuterRotationCircle"
+    OuterRotationCircle.AlwaysOnTop = true
+    OuterRotationCircle.Height = 0.05
+    OuterRotationCircle.Color3 = Color3.new(0, 1, 0)
+    OuterRotationCircle.Transparency = 0.5
+    OuterRotationCircle.Adornee = CenterPart
+    OuterRotationCircle.Parent = Motor6DVisualContainer
+
+    local InnerRotationCircle = Instance.new("CylinderHandleAdornment")
+    InnerRotationCircle.AlwaysOnTop = true
+    InnerRotationCircle.Height = 0.05
+    InnerRotationCircle.Radius = 1.1
+    InnerRotationCircle.InnerRadius = 1.05
+    InnerRotationCircle.Color3 = Color3.new(0, 1, 0)
+    InnerRotationCircle.Transparency = 0.5
+    InnerRotationCircle.Adornee = CenterPart
+    InnerRotationCircle.Parent = Motor6DVisualContainer
+
     local RotationDirection1 = Instance.new("ConeHandleAdornment")
     RotationDirection1.AlwaysOnTop = true
     RotationDirection1.ZIndex = 0
@@ -87,10 +106,13 @@ function Motor6DVisual:__new()
         local Velocity = (self.Velocity == 0 and 0.05 or self.Velocity)
         local Rotation = tick() * 60 * Velocity
         local BaseRotationCFrame = self.C0 * CFrame.Angles(0, 0, Rotation % (math.pi * 2))
+        local OuterCircleRadius = ((((2 * C1Offset.X) ^ 2) + ((2 * C1Offset.Y) ^ 2)) ^ 0.5) + 0.025
 
         Part0Adorn.Visible = self.Enabled
         Part1StaticAdorn.Visible = self.Enabled
         Part1RotatingAdorn.Visible = self.Enabled
+        OuterRotationCircle.Visible = self.Enabled
+        InnerRotationCircle.Visible = self.Enabled
         RotationDirection1.Visible = self.Enabled
         RotationDirection2.Visible = self.Enabled
 
@@ -101,8 +123,12 @@ function Motor6DVisual:__new()
         Part1RotatingAdorn.Height = self.C1.Position.Magnitude
         Part1StaticAdorn.CFrame = self.C0 * C1Offset
         Part1RotatingAdorn.CFrame = BaseRotationCFrame * C1Offset
+        InnerRotationCircle.CFrame = self.C0
+        OuterRotationCircle.CFrame = self.C0 * CFrame.new(0, 0, C1Offset.Z * 2)
         RotationDirection1.CFrame = BaseRotationCFrame * CFrame.new(0.5, 1, 0) * CFrame.Angles(0, math.rad(90), 0)
         RotationDirection2.CFrame = BaseRotationCFrame * CFrame.new(-0.5, -1, 0) * CFrame.Angles(0, math.rad(-90), 0)
+        OuterRotationCircle.InnerRadius = OuterCircleRadius - 0.05
+        OuterRotationCircle.Radius = OuterCircleRadius
     end)
 end
 
