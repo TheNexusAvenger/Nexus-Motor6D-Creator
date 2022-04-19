@@ -4,6 +4,7 @@ TheNexusAvenger
 View for editting Motor6D properties.
 --]]
 
+local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService")
 
 local NexusPluginFramework = require(script.Parent.Parent:WaitForChild("NexusPluginComponents"))
@@ -176,6 +177,7 @@ function Motor6DView:__new()
         CreateButton.Disabled = not self.Preview.Enabled
     end)
     self:DisableChangeReplication("PivotPart")
+    self:DisableChangeReplication("CurrentMotor")
 
     --Connect updating the pivot part.
     local LastPart0, LastPart1 = nil, nil
@@ -184,12 +186,14 @@ function Motor6DView:__new()
             self.PivotPart = Part0PropertyRow.Value
         end
         LastPart0 = Part0PropertyRow.Value
+        self:UpdateCurrentMotor()
     end)
     Part1PropertyRow:GetPropertyChangedSignal("Value"):Connect(function()
         if not self.PivotPart or (self.PivotPart and self.PivotPart == LastPart1) then
             self.PivotPart = Part1PropertyRow.Value
         end
         LastPart1 = Part1PropertyRow.Value
+        self:UpdateCurrentMotor()
     end)
 
     --Connect the buttons.
@@ -235,27 +239,62 @@ function Motor6DView:__new()
         if CreateDB and self.Preview.Enabled then
             CreateDB = false
 
-            --Create the motor.
             local Part0, Part1 = Part0PropertyRow.Value, Part1PropertyRow.Value
             if Part0 and Part1 then
                 --TODO: Change history
-                local Motor6D = Instance.new("Motor6D")
-                Motor6D.Part0 = Part0:GetWrappedInstance()
-                Motor6D.Part1 = Part1:GetWrappedInstance()
-                Motor6D.C0 = self.Preview.C0
-                Motor6D.C1 = self.Preview.C1
-                Motor6D.MaxVelocity = MaxVelocitySlider.Value
-                Motor6D.DesiredAngle = (MaxAngleCheckbox.Value == "Checked" and 2 ^ 1000 or 0)
-                Motor6D.Parent = Motor6D.Part0
+                --Create the motor.
+                if not self.CurrentMotor then
+                    local Motor6D = Instance.new("Motor6D")
+                    Motor6D.Part0 = Part0:GetWrappedInstance()
+                    Motor6D.Part1 = Part1:GetWrappedInstance()
+                    Motor6D.Parent = Motor6D.Part0
+                    self.CurrentMotor = Motor6D
+                end
+
+                --Update the motor.
+                self.CurrentMotor.C0 = self.Preview.C0
+                self.CurrentMotor.C1 = self.Preview.C1
+                self.CurrentMotor.MaxVelocity = MaxVelocitySlider.Value
+                self.CurrentMotor.DesiredAngle = (MaxAngleCheckbox.Value == "Checked" and 2 ^ 1000 or 0)
             end
             CreateDB = true
         end
+    end)
+
+    self:GetPropertyChangedSignal("CurrentMotor"):Connect(function()
+        CreateButton.Text = (self.CurrentMotor and "Update" or "Create")
     end)
 
     --Update the preview.
     RunService.RenderStepped:Connect(function()
         self:UpdatePreview()
     end)
+    self:UpdateCurrentMotor()
+end
+
+--[[
+Updates the current Motor6D for the current parts.
+--]]
+function Motor6DView:UpdateCurrentMotor()
+    --Return if the Part0 or Part1 aren't defined.
+    local Part0 = self.Part0Property.Value
+    local Part1 = self.Part1Property.Value
+    if not Part0 or not Part1 then
+        self.CurrentMotor = nil
+        return
+    end
+
+    --Set the motor in Workspace where the Part0 and Part1 match.
+    Part0 = Part0:GetWrappedInstance()
+    Part1 = Part1:GetWrappedInstance()
+    for _, Motor6D in pairs(Workspace:GetDescendants()) do
+        if Motor6D:IsA("Motor6D") then
+            if (Motor6D.Part0 == Part0 and Motor6D.Part1 == Part1) or (Motor6D.Part0 == Part1 and Motor6D.Part1 == Part0) then
+                self.CurrentMotor = Motor6D
+                break
+            end
+        end
+    end
 end
 
 --[[
