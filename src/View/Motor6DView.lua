@@ -157,6 +157,9 @@ function Motor6DView:__new()
     self.LocalSpaceCheckbox = LocalSpaceCheckbox
     self:DisableChangeReplication("Preview")
     self.Preview = Motor6DVisual.new()
+    self.Preview:GetPropertyChangedSignal("Enabled"):Connect(function()
+        CreateButton.Disabled = not self.Preview.Enabled
+    end)
     self:DisableChangeReplication("PivotPart")
 
     --Connect updating the pivot part.
@@ -212,6 +215,26 @@ function Motor6DView:__new()
         end
     end)
 
+    local CreateDB = true
+    CreateButton.MouseButton1Down:Connect(function()
+        if CreateDB and self.Preview.Enabled then
+            CreateDB = false
+
+            --Create the motor.
+            local Part0, Part1 = Part0PropertyRow.Value, Part1PropertyRow.Value
+            if Part0 and Part1 then
+                --TODO: Change history
+                local Motor6D = Instance.new("Motor6D")
+                Motor6D.Part0 = Part0:GetWrappedInstance()
+                Motor6D.Part1 = Part1:GetWrappedInstance()
+                Motor6D.C0 = self.Preview.C0
+                Motor6D.C1 = self.Preview.C1
+                Motor6D.Parent = Motor6D.Part0
+            end
+            CreateDB = true
+        end
+    end)
+
     --Update the preview.
     RunService.RenderStepped:Connect(function()
         self:UpdatePreview()
@@ -233,8 +256,8 @@ function Motor6DView:UpdatePreview()
     self.Preview.Enabled = true
 
     --Update the preview.
-    local Pivot = PivotPart.CFrame
-    local Rotation = CFrame.Angles(math.rad(self.RotationXSlider.Value), math.rad(self.RotationYSlider.Value), math.rad(self.RotationZSlider.Value)) * CFrame.new(PivotPart.Size * Vector3.new(self.PositionXSlider.Value, self.PositionYSlider.Value, self.PositionZSlider.Value))
+    local Pivot = PivotPart.CFrame * CFrame.new(PivotPart.Size * Vector3.new(self.PositionXSlider.Value, self.PositionYSlider.Value, self.PositionZSlider.Value))
+    local Rotation = CFrame.Angles(math.rad(self.RotationXSlider.Value), math.rad(self.RotationYSlider.Value), math.rad(self.RotationZSlider.Value))
     if self.LocalSpaceCheckbox.Value ~= "Checked" then
         Pivot = CFrame.new(Pivot.Position)
     end

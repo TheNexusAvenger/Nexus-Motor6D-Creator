@@ -82,7 +82,8 @@ function Motor6DVisual:__new()
 
     --Set up updating.
     self.UpdateEvent = RunService.RenderStepped:Connect(function()
-        local C1Offset = CFrame.new(Vector3.zero, -self.C1.Position) * CFrame.new(0, 0, -self.C1.Position.Magnitude / 2)
+        local C1Offset = self.C0:Inverse() * CFrame.new(self.C0.Position, (self.C0 * self.C1:Inverse()).Position)
+        C1Offset = CFrame.new(-C1Offset.Position) * C1Offset * CFrame.new(0, 0, -self.C1.Position.Magnitude / 2)
         local Velocity = (self.Velocity == 0 and 0.05 or self.Velocity)
         local Rotation = tick() * 60 * Velocity
         local BaseRotationCFrame = self.C0 * CFrame.Angles(0, 0, Rotation % (math.pi * 2))
