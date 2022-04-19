@@ -5,6 +5,7 @@ View for editting Motor6D properties.
 --]]
 
 local Workspace = game:GetService("Workspace")
+local ChangeHistoryService = game:GetService("ChangeHistoryService")
 local RunService = game:GetService("RunService")
 
 local NexusPluginFramework = require(script.Parent.Parent:WaitForChild("NexusPluginComponents"))
@@ -241,8 +242,8 @@ function Motor6DView:__new()
 
             local Part0, Part1 = Part0PropertyRow.Value, Part1PropertyRow.Value
             if Part0 and Part1 then
-                --TODO: Change history
                 --Create the motor.
+                ChangeHistoryService:SetWaypoint("NexusMotor6DCreatorBeforeSetMotor")
                 if not self.CurrentMotor then
                     local Motor6D = Instance.new("Motor6D")
                     Motor6D.Part0 = Part0:GetWrappedInstance()
@@ -256,6 +257,7 @@ function Motor6DView:__new()
                 self.CurrentMotor.C1 = self.Preview.C1
                 self.CurrentMotor.MaxVelocity = MaxVelocitySlider.Value
                 self.CurrentMotor.DesiredAngle = (MaxAngleCheckbox.Value == "Checked" and 2 ^ 1000 or 0)
+                ChangeHistoryService:SetWaypoint("NexusMotor6DCreatorAfterSetMotor")
             end
             CreateDB = true
         end
