@@ -24,7 +24,7 @@ function InstanceRowProperty:__new()
 
     local InputSlider = NexusPluginFramework.new("Slider")
     InputSlider.AnchorPoint = Vector2.new(1, 0)
-    InputSlider.Size = UDim2.new(1, -40, 1, 0)
+    InputSlider.Size = UDim2.new(1, -42, 1, 0)
     InputSlider.Position = UDim2.new(1, 0, 0, 0)
     InputSlider.Parent = self.PropertyAdornFrame
     InputSlider:ConnectTextBox(InputTextBox)
