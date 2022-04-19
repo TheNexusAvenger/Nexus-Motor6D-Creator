@@ -9,6 +9,7 @@ local Header = require(script.Parent:WaitForChild("Row"):WaitForChild("Header"))
 local InstanceRowProperty = require(script.Parent:WaitForChild("Row"):WaitForChild("InstanceRowProperty"))
 local RotationButtonRow = require(script.Parent:WaitForChild("Row"):WaitForChild("RotationButtonRow"))
 local SliderRowProperty = require(script.Parent:WaitForChild("Row"):WaitForChild("SliderRowProperty"))
+local PointSelection = require(script.Parent.Parent:WaitForChild("Geometry"):WaitForChild("PointSelection"))
 
 local Motor6DView = NexusPluginFramework:GetResource("Base.PluginInstance"):Extend()
 Motor6DView:SetClassName("Motor6DView")
@@ -122,15 +123,54 @@ function Motor6DView:__new()
     CreateButton.TextColor3 = Enum.StudioStyleGuideColor.DialogMainButtonText
     CreateButton.Parent = self
 
-    local SetPivotButton = NexusPluginFramework.new("TextButton")
-    SetPivotButton.BackgroundColor3 = Enum.StudioStyleGuideColor.DialogButton
-    SetPivotButton.BorderColor3 = Enum.StudioStyleGuideColor.DialogButtonBorder
-    SetPivotButton.Size = UDim2.new(0, 90, 0, 22)
-    SetPivotButton.AnchorPoint = Vector2.new(0.5, 0)
-    SetPivotButton.Position = UDim2.new(0.7, 0, 0, 370)
-    SetPivotButton.Text = "Select Pivot"
-    SetPivotButton.TextColor3 = Enum.StudioStyleGuideColor.DialogButtonText
-    SetPivotButton.Parent = self
+    local SelectPivotButton = NexusPluginFramework.new("TextButton")
+    SelectPivotButton.BackgroundColor3 = Enum.StudioStyleGuideColor.DialogButton
+    SelectPivotButton.BorderColor3 = Enum.StudioStyleGuideColor.DialogButtonBorder
+    SelectPivotButton.Size = UDim2.new(0, 90, 0, 22)
+    SelectPivotButton.AnchorPoint = Vector2.new(0.5, 0)
+    SelectPivotButton.Position = UDim2.new(0.7, 0, 0, 370)
+    SelectPivotButton.Text = "Select Pivot"
+    SelectPivotButton.TextColor3 = Enum.StudioStyleGuideColor.DialogButtonText
+    SelectPivotButton.Parent = self
+
+    --Add the custom properties.
+    self:DisableChangeReplication("PivotPart")
+
+    --Connect the buttons.
+    local SelectPivotDB = true
+    local CurrentSelection = nil
+    SelectPivotButton.MouseButton1Down:Connect(function()
+        if SelectPivotDB then
+            --Clear the existing selection.
+            SelectPivotDB = false
+            if CurrentSelection then
+                CurrentSelection:Destroy()
+            end
+
+            --Start the new selection.
+            local NewSelection = PointSelection.new()
+            CurrentSelection = NewSelection
+            task.spawn(function()
+                --Get the selection.
+                local SelectionCFrame = NewSelection:PromptSelection()
+                local SelectionPart = NewSelection.LastPart
+                if CurrentSelection ~= CurrentSelection then return end
+
+                --Update the sliders.
+                local RelativeCFrame = SelectionPart.CFrame:Inverse() * SelectionCFrame
+                PositionXSlider.Value = RelativeCFrame.X / SelectionPart.Size.X
+                PositionYSlider.Value = RelativeCFrame.Y / SelectionPart.Size.Y
+                PositionZSlider.Value = RelativeCFrame.Z / SelectionPart.Size.Z
+                self.PivotPart = SelectionPart
+
+                --Clear the selection.
+                if CurrentSelection then
+                    CurrentSelection:Destroy()
+                end
+            end)
+            SelectPivotDB = true
+        end
+    end)
 end
 
 
