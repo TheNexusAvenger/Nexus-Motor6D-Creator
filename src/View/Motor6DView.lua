@@ -7,6 +7,7 @@ View for editting Motor6D properties.
 local NexusPluginFramework = require(script.Parent.Parent:WaitForChild("NexusPluginComponents"))
 local Header = require(script.Parent:WaitForChild("Row"):WaitForChild("Header"))
 local InstanceRowProperty = require(script.Parent:WaitForChild("Row"):WaitForChild("InstanceRowProperty"))
+local RotationButtonRow = require(script.Parent:WaitForChild("Row"):WaitForChild("RotationButtonRow"))
 local SliderRowProperty = require(script.Parent:WaitForChild("Row"):WaitForChild("SliderRowProperty"))
 
 local Motor6DView = NexusPluginFramework:GetResource("Base.PluginInstance"):Extend()
@@ -96,6 +97,19 @@ function Motor6DView:__new()
     LocalSpaceText.Position = UDim2.new(0, 24, 0, (23 * 11) + 4)
     LocalSpaceText.Text = "Rotation relative to selected pivot"
     LocalSpaceText.Parent = self
+
+    --Create the slider toggle buttons.
+    local XAxisButtons = RotationButtonRow.new("X Axis", RotationXSlider)
+    XAxisButtons.Position = UDim2.new(0, 0, 0, 280)
+    XAxisButtons.Parent = self
+
+    local YAxisButtons = RotationButtonRow.new("Y Axis", RotationYSlider)
+    YAxisButtons.Position = UDim2.new(0, 0, 0, 280 + (24 * 1))
+    YAxisButtons.Parent = self
+
+    local ZAxisButtons = RotationButtonRow.new("Z Axis", RotationZSlider)
+    ZAxisButtons.Position = UDim2.new(0, 0, 0, 280 + (24 * 2))
+    ZAxisButtons.Parent = self
 end
 
 
