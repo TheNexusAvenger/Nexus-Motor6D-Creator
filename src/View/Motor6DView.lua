@@ -24,7 +24,7 @@ Motor6DView:SetClassName("Motor6DView")
 --[[
 Creates the Motor6D view.
 --]]
-function Motor6DView:__new()
+function Motor6DView:__new(Plugin: Plugin?)
     self:InitializeSuper("Frame")
     self.BorderSizePixel = 1
 
@@ -36,11 +36,13 @@ function Motor6DView:__new()
     local Part0PropertyRow = InstanceRowProperty.new()
     Part0PropertyRow.Position = UDim2.new(0, 0, 0, 23 * 1)
     Part0PropertyRow.Text = "Part0"
+    Part0PropertyRow.Plugin = Plugin
     Part0PropertyRow.Parent = self
 
     local Part1PropertyRow = InstanceRowProperty.new()
     Part1PropertyRow.Position = UDim2.new(0, 0, 0, 23 * 2)
     Part1PropertyRow.Text = "Part1"
+    Part0PropertyRow.Plugin = Plugin
     Part1PropertyRow.Parent = self
 
     --Create the position property rows.
@@ -213,6 +215,9 @@ function Motor6DView:__new()
             --Start the new selection.
             local NewSelection = PointSelection.new()
             CurrentSelection = NewSelection
+            if Plugin then
+                Plugin:Activate(true)
+            end
             task.spawn(function()
                 --Get the selection.
                 local SelectionCFrame = NewSelection:PromptSelection()
@@ -229,6 +234,9 @@ function Motor6DView:__new()
                 end
 
                 --Clear the selection.
+                if Plugin then
+                    Plugin:Deactivate()
+                end
                 if NewSelection then
                     NewSelection:Destroy()
                 end

@@ -15,13 +15,13 @@ Motor6DWindow:SetClassName("Motor6DWindow")
 --[[
 Creates the Motor6D window.
 --]]
-function Motor6DWindow:__new(Plugin)
+function Motor6DWindow:__new(Plugin: Plugin)
     self:InitializeSuper(Plugin:CreateDockWidgetPluginGui("Motor6D Creator", DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Left, false, false, 300, 430, 300, 430)))
     self.Title = "Motor6D Creator"
     self.Name = "Motor6D Creator"
 
     --Add the Motor6D view.
-    local View = Motor6DView.new()
+    local View = Motor6DView.new(Plugin)
     View.Size = UDim2.new(1, -2, 1, -2)
     View.Position = UDim2.new(0, 1, 0, 1)
     View.Parent = self

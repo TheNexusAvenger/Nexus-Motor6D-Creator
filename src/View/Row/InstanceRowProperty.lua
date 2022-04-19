@@ -34,8 +34,9 @@ function InstanceRowProperty:__new()
     ToggleSelectionButton.Text = "..."
     ToggleSelectionButton.Parent = self.PropertyAdornFrame
 
-    --Connect the custom property.
+    --Connect the custom properties.
     local CurrentSelection = nil
+    self:DisableChangeReplication("Plugin")
     self:DisableChangeReplication("Value")
     self:GetPropertyChangedSignal("Value"):Connect(function()
         InstanceNameText.Text = (self.Value and self.Value.Name or "")
@@ -69,12 +70,20 @@ function InstanceRowProperty:__new()
                 local NewSelection = PartSelection.new()
                 CurrentSelection = NewSelection
 
+                --Activate the plugin.
+                if self.Plugin then
+                    self.Plugin:Activate(true)
+                end
+
                 --Prompt the selection in the background.
                 task.spawn(function()
                     local Selection = CurrentSelection:PromptSelection()
                     if CurrentSelection ~= NewSelection then return end
                     self.Value = Selection
                     self.Selecting = false
+                    if self.Plugin then
+                        self.Plugin:Deactivate()
+                    end
                 end)
             end
             DB = true
