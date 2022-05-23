@@ -299,15 +299,20 @@ function Motor6DView:UpdateCurrentMotor()
     end
 
     --Set the motor in Workspace where the Part0 and Part1 match.
+    local MotorFound = false
     Part0 = Part0:GetWrappedInstance()
     Part1 = Part1:GetWrappedInstance()
     for _, Motor6D in pairs(Workspace:GetDescendants()) do
         if Motor6D:IsA("Motor6D") then
             if (Motor6D.Part0 == Part0 and Motor6D.Part1 == Part1) or (Motor6D.Part0 == Part1 and Motor6D.Part1 == Part0) then
+                MotorFound = true
                 self.CurrentMotor = Motor6D
                 break
             end
         end
+    end
+    if not MotorFound then
+        self.CurrentMotor = nil
     end
 end
 
