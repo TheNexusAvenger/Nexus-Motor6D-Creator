@@ -60,9 +60,11 @@ function WeldWindow:__new(Plugin: Plugin)
     Selection.SelectionChanged:Connect(function()
         local NewSelection = {}
         for _, Part in pairs(Selection:Get()) do
-            if Part:IsA("BasePart") then
-                table.insert(NewSelection, Part)
-            end
+            pcall(function()
+                if Part:IsA("BasePart") then
+                    table.insert(NewSelection, Part)
+                end
+            end)
         end
         self.Selection = NewSelection
     end)

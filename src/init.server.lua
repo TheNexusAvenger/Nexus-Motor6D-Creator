@@ -37,11 +37,13 @@ Motor6DCreatorButton.Click:Connect(function()
     --Get the first 2 parts in the current selection.
     local Parts = {}
     for _, Part in pairs(Selection:Get()) do
-        if Part:IsA("BasePart") then
-            table.insert(Parts, Part)
-            if #Parts == 2 then
-                break
+        pcall(function()
+            if Part:IsA("BasePart") then
+                table.insert(Parts, Part)
             end
+        end)
+        if #Parts == 2 then
+            break
         end
     end
     if #Parts > 0 then
