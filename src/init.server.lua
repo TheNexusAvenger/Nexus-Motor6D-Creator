@@ -34,19 +34,24 @@ Motor6DCreatorButton.Click:Connect(function()
     --Show the window.
     MotorView.Enabled = true
 
-    --Get the first 2 parts in the current selection.
+    --Get the Motor6D or the first 2 parts in the current selection.
+    local Motor6Ds = {}
     local Parts = {}
-    for _, Part in pairs(Selection:Get()) do
+    for _, PartOrMotor in pairs(Selection:Get()) do
         pcall(function()
-            if Part:IsA("BasePart") then
-                table.insert(Parts, Part)
+            if PartOrMotor:IsA("BasePart") then
+                table.insert(Parts, PartOrMotor)
+            elseif PartOrMotor:IsA("Motor6D") then
+                table.insert(Motor6Ds, PartOrMotor)
             end
         end)
         if #Parts == 2 then
             break
         end
     end
-    if #Parts > 0 then
+    if #Motor6Ds > 0 then
+        MotorView.View:LoadParts(Motor6Ds[1].Part0, Motor6Ds[1].Part1)
+    elseif #Parts > 0 then
         MotorView.View:LoadParts(Parts[1], Parts[2])
     end
 end)
