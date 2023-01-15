@@ -5,8 +5,9 @@ Row of buttons for quickly rotating a rotation slider.
 --]]
 
 local NexusPluginFramework = require(script.Parent.Parent.Parent:WaitForChild("NexusPluginComponents"))
+local PluginInstance = NexusPluginFramework:GetResource("Base.PluginInstance")
 
-local RotationButtonRow = NexusPluginFramework:GetResource("Base.PluginInstance"):Extend()
+local RotationButtonRow = PluginInstance:Extend()
 RotationButtonRow:SetClassName("RotationButtonRow")
 
 
@@ -15,7 +16,7 @@ RotationButtonRow:SetClassName("RotationButtonRow")
 Creates the button row.
 --]]
 function RotationButtonRow:__new(Text, Slider)
-    self:InitializeSuper("Frame")
+    PluginInstance.__new(self, "Frame")
 
     --Create the child buttons.
     local Minus90Button = NexusPluginFramework.new("TextButton")

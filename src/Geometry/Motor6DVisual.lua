@@ -8,8 +8,9 @@ local CoreGui = game:GetService("CoreGui")
 local RunService = game:GetService("RunService")
 
 local NexusPluginFramework = require(script.Parent.Parent:WaitForChild("NexusPluginComponents"))
+local NexusInstance = NexusPluginFramework:GetResource("NexusInstance.NexusInstance")
 
-local Motor6DVisual = NexusPluginFramework:GetResource("NexusInstance.NexusInstance"):Extend()
+local Motor6DVisual = NexusInstance:Extend()
 Motor6DVisual:SetClassName("Motor6DVisual")
 
 
@@ -18,7 +19,7 @@ Motor6DVisual:SetClassName("Motor6DVisual")
 Creates the Motor6D visual.
 --]]
 function Motor6DVisual:__new()
-    self:InitializeSuper()
+    NexusInstance.__new(self)
 
     --Create the visible components.
     local Motor6DVisualContainer = Instance.new("Folder")
@@ -136,7 +137,7 @@ end
 Destroys the Motor6D visual.
 --]]
 function Motor6DVisual:Destroy()
-    self.super:Destroy()
+    NexusInstance.Destroy(self)
     self.Motor6DVisualContainer:Destroy()
     self.UpdateEvent:Disconnect()
 end

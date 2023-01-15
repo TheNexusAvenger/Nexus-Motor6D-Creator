@@ -8,8 +8,9 @@ local ChangeHistoryService = game:GetService("ChangeHistoryService")
 local Selection = game:GetService("Selection")
 
 local NexusPluginFramework = require(script.Parent.Parent:WaitForChild("NexusPluginComponents"))
+local PluginInstance = NexusPluginFramework:GetResource("Base.PluginInstance")
 
-local WeldWindow = NexusPluginFramework:GetResource("Base.PluginInstance"):Extend()
+local WeldWindow = PluginInstance:Extend()
 WeldWindow:SetClassName("WeldWindow")
 
 
@@ -18,7 +19,7 @@ WeldWindow:SetClassName("WeldWindow")
 Creates the Weld window.
 --]]
 function WeldWindow:__new(Plugin: Plugin)
-    self:InitializeSuper(Plugin:CreateDockWidgetPluginGui("Weld Creator", DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Float, false, false, 200, 50, 160, 50)))
+    PluginInstance.__new(self, Plugin:CreateDockWidgetPluginGui("Weld Creator", DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Float, false, false, 200, 50, 160, 50)))
     self.Title = "Weld Creator"
     self.Name = "Weld Creator"
 

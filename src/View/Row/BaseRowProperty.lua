@@ -5,8 +5,9 @@ Base row frame for a property.
 --]]
 
 local NexusPluginFramework = require(script.Parent.Parent.Parent:WaitForChild("NexusPluginComponents"))
+local PluginInstance = NexusPluginFramework:GetResource("Base.PluginInstance")
 
-local BaseRowProperty = NexusPluginFramework:GetResource("Base.PluginInstance"):Extend()
+local BaseRowProperty = PluginInstance:Extend()
 BaseRowProperty:SetClassName("BaseRowProperty")
 
 
@@ -14,7 +15,7 @@ BaseRowProperty:SetClassName("BaseRowProperty")
 Creates the base row property.
 --]]
 function BaseRowProperty:__new()
-    self:InitializeSuper("Frame")
+    PluginInstance.__new(self, "Frame")
 
     --Create the child frames.
     local NameFrame = NexusPluginFramework.new("Frame")

@@ -13,8 +13,9 @@ local UserInputService = game:GetService("UserInputService")
 
 local NexusPluginFramework = require(script.Parent.Parent:WaitForChild("NexusPluginComponents"))
 local GetMouseTarget = require(script.Parent.Parent:WaitForChild("Util"):WaitForChild("GetMouseTarget"))
+local NexusInstance = NexusPluginFramework:GetResource("NexusInstance.NexusInstance")
 
-local PartSelection = NexusPluginFramework:GetResource("NexusInstance.NexusInstance"):Extend()
+local PartSelection = NexusInstance:Extend()
 PartSelection:SetClassName("PartSelection")
 
 
@@ -23,7 +24,7 @@ PartSelection:SetClassName("PartSelection")
 Creates the part selection.
 --]]
 function PartSelection:__new()
-    self:InitializeSuper()
+    NexusInstance.__new(self)
 
     --Create the selection box.
     local SelectionBox = Instance.new("SelectionBox")
@@ -75,7 +76,7 @@ end
 Destroys the part selection.
 --]]
 function PartSelection:Destroy(): nil
-    self.super:Destroy()
+    NexusInstance.Destroy(self)
 
     self.SelectionBox:Destroy()
     for _, Event in pairs(self.Events) do

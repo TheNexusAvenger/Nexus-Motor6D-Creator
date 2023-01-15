@@ -6,8 +6,9 @@ Window for the Motor6D creator view.
 
 local NexusPluginFramework = require(script.Parent.Parent:WaitForChild("NexusPluginComponents"))
 local Motor6DView = require(script.Parent:WaitForChild("Motor6DView"))
+local PluginInstance = NexusPluginFramework:GetResource("Base.PluginInstance")
 
-local Motor6DWindow = NexusPluginFramework:GetResource("Base.PluginInstance"):Extend()
+local Motor6DWindow = PluginInstance:Extend()
 Motor6DWindow:SetClassName("Motor6DWindow")
 
 
@@ -16,7 +17,7 @@ Motor6DWindow:SetClassName("Motor6DWindow")
 Creates the Motor6D window.
 --]]
 function Motor6DWindow:__new(Plugin: Plugin)
-    self:InitializeSuper(Plugin:CreateDockWidgetPluginGui("Motor6D Creator", DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Left, false, false, 300, 430, 300, 430)))
+    PluginInstance.__new(self, Plugin:CreateDockWidgetPluginGui("Motor6D Creator", DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Left, false, false, 300, 430, 300, 430)))
     self.Title = "Motor6D Creator"
     self.Name = "Motor6D Creator"
 

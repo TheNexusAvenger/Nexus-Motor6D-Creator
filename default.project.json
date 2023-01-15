@@ -1,15 +1,9 @@
 {
-    "name": "Nexus-Motor6D-Creator",
+    "name": "NexusMotor6DCreatorPlugin",
     "tree": {
-        "$className": "DataModel",
-        "ReplicatedStorage": {
-            "$className": "ReplicatedStorage",
-            "NexusMotor6DCreator": {
-                "$path": "src",
-                "NexusPluginComponents": {
-                    "$path": "module/Nexus-Plugin-Components/"
-                }
-            }
+        "$path": "src",
+        "NexusPluginComponents": {
+            "$path": "module/Nexus-Plugin-Components/"
         }
     }
 }

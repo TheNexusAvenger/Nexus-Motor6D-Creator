@@ -15,8 +15,9 @@ local RotationButtonRow = require(script.Parent:WaitForChild("Row"):WaitForChild
 local SliderRowProperty = require(script.Parent:WaitForChild("Row"):WaitForChild("SliderRowProperty"))
 local PointSelection = require(script.Parent.Parent:WaitForChild("Geometry"):WaitForChild("PointSelection"))
 local Motor6DVisual = require(script.Parent.Parent:WaitForChild("Geometry"):WaitForChild("Motor6DVisual"))
+local PluginInstance = NexusPluginFramework:GetResource("Base.PluginInstance")
 
-local Motor6DView = NexusPluginFramework:GetResource("Base.PluginInstance"):Extend()
+local Motor6DView = PluginInstance:Extend()
 Motor6DView:SetClassName("Motor6DView")
 
 
@@ -25,7 +26,7 @@ Motor6DView:SetClassName("Motor6DView")
 Creates the Motor6D view.
 --]]
 function Motor6DView:__new(Plugin: Plugin?)
-    self:InitializeSuper("Frame")
+    PluginInstance.__new(self, "Frame")
     self.BorderSizePixel = 1
 
     --Create the part property rows.

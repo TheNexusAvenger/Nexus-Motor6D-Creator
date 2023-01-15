@@ -1,0 +1,13 @@
+
+{
+    "name": "Nexus-Motor6D-Creator-Plugin",
+    "tree": {
+        "$className": "DataModel",
+        "ReplicatedStorage": {
+            "$className": "ReplicatedStorage",
+            "NexusMotor6DCreatorPlugin": {
+                "$path": "."
+            }
+        }
+    }
+}

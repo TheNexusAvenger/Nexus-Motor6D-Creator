@@ -5,8 +5,9 @@ Header row for a list of properties.
 --]]
 
 local NexusPluginFramework = require(script.Parent.Parent.Parent:WaitForChild("NexusPluginComponents"))
+local PluginInstance = NexusPluginFramework:GetResource("Base.PluginInstance")
 
-local Header = NexusPluginFramework:GetResource("Base.PluginInstance"):Extend()
+local Header = PluginInstance:Extend()
 Header:SetClassName("Header")
 
 
@@ -14,7 +15,7 @@ Header:SetClassName("Header")
 Creates the header.
 --]]
 function Header:__new()
-    self:InitializeSuper("Frame")
+    PluginInstance.__new(self, "Frame")
 
     --Create the child frames.
     local NameFrame = NexusPluginFramework.new("Frame")

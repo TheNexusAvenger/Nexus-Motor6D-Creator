@@ -6,8 +6,9 @@ Row property for an instance reference.
 
 local NexusPluginFramework = require(script.Parent.Parent.Parent:WaitForChild("NexusPluginComponents"))
 local PartSelection = require(script.Parent.Parent.Parent:WaitForChild("Geometry"):WaitForChild("PartSelection"))
+local BaseRowProperty = require(script.Parent:WaitForChild("BaseRowProperty"))
 
-local InstanceRowProperty = require(script.Parent:WaitForChild("BaseRowProperty")):Extend()
+local InstanceRowProperty = BaseRowProperty:Extend()
 InstanceRowProperty:SetClassName("InstanceRowProperty")
 
 
@@ -16,7 +17,7 @@ InstanceRowProperty:SetClassName("InstanceRowProperty")
 Creates the instance row property.
 --]]
 function InstanceRowProperty:__new()
-    self:InitializeSuper()
+    BaseRowProperty.__new(self)
 
     --Create the additional frames.
     local InstanceNameText = NexusPluginFramework.new("TextLabel")

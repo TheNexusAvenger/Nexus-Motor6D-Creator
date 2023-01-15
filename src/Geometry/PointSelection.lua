@@ -10,8 +10,9 @@ local UserInputService = game:GetService("UserInputService")
 
 local NexusPluginFramework = require(script.Parent.Parent:WaitForChild("NexusPluginComponents"))
 local GetMouseTarget = require(script.Parent.Parent:WaitForChild("Util"):WaitForChild("GetMouseTarget"))
+local NexusInstance = NexusPluginFramework:GetResource("NexusInstance.NexusInstance")
 
-local PointSelection = NexusPluginFramework:GetResource("NexusInstance.NexusInstance"):Extend()
+local PointSelection = NexusInstance:Extend()
 PointSelection:SetClassName("PointSelection")
 
 
@@ -20,7 +21,7 @@ PointSelection:SetClassName("PointSelection")
 Creates the point selection.
 --]]
 function PointSelection:__new()
-    self:InitializeSuper()
+    NexusInstance.__new(self)
 
     --Create the selection components.
     local PointSelectionContainer = Instance.new("Folder")
@@ -196,7 +197,7 @@ end
 Destroys the point selection.
 --]]
 function PointSelection:Destroy(): nil
-    self.super:Destroy()
+    NexusInstance.Destroy(self)
 
     self.PointSelectionContainer:Destroy()
     for _, Event in pairs(self.Events) do
