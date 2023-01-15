@@ -3,12 +3,22 @@ TheNexusAvenger
 
 Header row for a list of properties.
 --]]
+--!strict
 
-local NexusPluginFramework = require(script.Parent.Parent.Parent:WaitForChild("NexusPluginComponents"))
-local PluginInstance = NexusPluginFramework:GetResource("Base.PluginInstance")
+local NexusMotor6DCreatorPlugin = script.Parent.Parent.Parent
+local NexusPluginFramework = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"))
+local PluginInstance = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Base"):WaitForChild("PluginInstance"))
 
 local Header = PluginInstance:Extend()
 Header:SetClassName("Header")
+
+export type Header = {
+    new: () -> (Header),
+    Extend: (self: Header) -> (Header),
+
+    Text: string,
+} & PluginInstance.PluginInstance & Frame
+
 
 
 --[[
@@ -46,4 +56,4 @@ end
 
 
 
-return Header
+return (Header :: any) :: Header

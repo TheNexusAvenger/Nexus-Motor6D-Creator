@@ -3,6 +3,7 @@ TheNexusAvenger
 
 Returns the part the mouse is hovering over.
 --]]
+--!strict
 
 local Workspace = game:GetService("Workspace")
 

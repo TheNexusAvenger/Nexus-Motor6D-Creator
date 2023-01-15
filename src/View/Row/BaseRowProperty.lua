@@ -4,17 +4,27 @@ TheNexusAvenger
 Base row frame for a property.
 --]]
 
-local NexusPluginFramework = require(script.Parent.Parent.Parent:WaitForChild("NexusPluginComponents"))
-local PluginInstance = NexusPluginFramework:GetResource("Base.PluginInstance")
+local NexusMotor6DCreatorPlugin = script.Parent.Parent.Parent
+local NexusPluginFramework = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"))
+local PluginInstance = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Base"):WaitForChild("PluginInstance"))
 
 local BaseRowProperty = PluginInstance:Extend()
 BaseRowProperty:SetClassName("BaseRowProperty")
+
+export type BaseRowProperty = {
+    new: () -> (BaseRowProperty),
+    Extend: (self: BaseRowProperty) -> (BaseRowProperty),
+
+    NameWidth: number,
+    Text: string,
+} & PluginInstance.PluginInstance & Frame
+
 
 
 --[[
 Creates the base row property.
 --]]
-function BaseRowProperty:__new()
+function BaseRowProperty:__new(): ()
     PluginInstance.__new(self, "Frame")
 
     --Create the child frames.
@@ -57,4 +67,4 @@ end
 
 
 
-return BaseRowProperty
+return (BaseRowProperty :: any):: BaseRowProperty

@@ -3,22 +3,34 @@ TheNexusAvenger
 
 Visualizes a Motor6D.
 --]]
+--!strict
 
 local CoreGui = game:GetService("CoreGui")
 local RunService = game:GetService("RunService")
 
-local NexusPluginFramework = require(script.Parent.Parent:WaitForChild("NexusPluginComponents"))
-local NexusInstance = NexusPluginFramework:GetResource("NexusInstance.NexusInstance")
+local NexusMotor6DCreatorPlugin = script.Parent.Parent
+local NexusInstance = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("NexusInstance"):WaitForChild("NexusInstance"))
 
 local Motor6DVisual = NexusInstance:Extend()
 Motor6DVisual:SetClassName("Motor6DVisual")
+
+export type Motor6DVisual = {
+    new: () -> (Motor6DVisual),
+    Extend: (self: Motor6DVisual) -> (Motor6DVisual),
+
+    StartCFrame: CFrame,
+    C0: CFrame,
+    C1: CFrame,
+    Velocity: number,
+    Enabled: boolean,
+} & NexusInstance.NexusInstance
 
 
 
 --[[
 Creates the Motor6D visual.
 --]]
-function Motor6DVisual:__new()
+function Motor6DVisual:__new(): ()
     NexusInstance.__new(self)
 
     --Create the visible components.
@@ -136,7 +148,7 @@ end
 --[[
 Destroys the Motor6D visual.
 --]]
-function Motor6DVisual:Destroy()
+function Motor6DVisual:Destroy(): ()
     NexusInstance.Destroy(self)
     self.Motor6DVisualContainer:Destroy()
     self.UpdateEvent:Disconnect()
@@ -144,4 +156,4 @@ end
 
 
 
-return Motor6DVisual
+return (Motor6DVisual :: any) :: Motor6DVisual

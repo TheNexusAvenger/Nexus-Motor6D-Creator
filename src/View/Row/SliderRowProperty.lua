@@ -3,19 +3,30 @@ TheNexusAvenger
 
 Row property for a slider.
 --]]
+--!strict
 
-local NexusPluginFramework = require(script.Parent.Parent.Parent:WaitForChild("NexusPluginComponents"))
+local NexusMotor6DCreatorPlugin = script.Parent.Parent.Parent
+local NexusPluginFramework = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"))
 local BaseRowProperty = require(script.Parent:WaitForChild("BaseRowProperty"))
 
-local InstanceRowProperty = BaseRowProperty:Extend()
-InstanceRowProperty:SetClassName("InstanceRowProperty")
+local SliderRowProperty = BaseRowProperty:Extend()
+SliderRowProperty:SetClassName("InstanceRowProperty")
+
+export type SliderRowProperty = {
+    new: () -> (SliderRowProperty),
+    Extend: (self: SliderRowProperty) -> (SliderRowProperty),
+
+    Value: number,
+    MinimumValue: number,
+    MaximumValue: number,
+} & BaseRowProperty.BaseRowProperty
 
 
 
 --[[
-Creates the instance row property.
+Creates the slider row property.
 --]]
-function InstanceRowProperty:__new()
+function SliderRowProperty:__new(): ()
     BaseRowProperty.__new(self)
 
     --Create the additional frames.
@@ -55,4 +66,4 @@ end
 
 
 
-return InstanceRowProperty
+return (SliderRowProperty :: any) :: SliderRowProperty

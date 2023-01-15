@@ -3,20 +3,29 @@ TheNexusAvenger
 
 Row property for an instance reference.
 --]]
+--!strict
 
-local NexusPluginFramework = require(script.Parent.Parent.Parent:WaitForChild("NexusPluginComponents"))
-local PartSelection = require(script.Parent.Parent.Parent:WaitForChild("Geometry"):WaitForChild("PartSelection"))
+local NexusMotor6DCreatorPlugin = script.Parent.Parent.Parent
+local NexusPluginFramework = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"))
+local PartSelection = require(NexusMotor6DCreatorPlugin:WaitForChild("Geometry"):WaitForChild("PartSelection"))
 local BaseRowProperty = require(script.Parent:WaitForChild("BaseRowProperty"))
 
 local InstanceRowProperty = BaseRowProperty:Extend()
 InstanceRowProperty:SetClassName("InstanceRowProperty")
+
+export type InstanceRowProperty = {
+    new: () -> (InstanceRowProperty),
+    Extend: (self: InstanceRowProperty) -> (InstanceRowProperty),
+
+    Value: Instance?,
+} & BaseRowProperty.BaseRowProperty
 
 
 
 --[[
 Creates the instance row property.
 --]]
-function InstanceRowProperty:__new()
+function InstanceRowProperty:__new(): ()
     BaseRowProperty.__new(self)
 
     --Create the additional frames.
@@ -52,7 +61,7 @@ function InstanceRowProperty:__new()
         --Clear the selection if it is complete.
         if not self.Selecting and CurrentSelection then
             CurrentSelection:Destroy()
-            CurrentSelection = nil
+            CurrentSelection = nil :: any
         end
     end)
     self.Selecting = false
@@ -78,7 +87,7 @@ function InstanceRowProperty:__new()
 
                 --Prompt the selection in the background.
                 task.spawn(function()
-                    local Selection = CurrentSelection:PromptSelection()
+                    local Selection = (CurrentSelection :: PartSelection.PartSelection):PromptSelection()
                     if CurrentSelection ~= NewSelection then return end
                     self.Value = Selection
                     self.Selecting = false
@@ -94,4 +103,4 @@ end
 
 
 
-return InstanceRowProperty
+return (InstanceRowProperty :: any) :: InstanceRowProperty

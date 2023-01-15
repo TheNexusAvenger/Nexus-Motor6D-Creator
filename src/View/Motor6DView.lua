@@ -3,29 +3,38 @@ TheNexusAvenger
 
 View for editting Motor6D properties.
 --]]
+--!strict
 
 local Workspace = game:GetService("Workspace")
 local ChangeHistoryService = game:GetService("ChangeHistoryService")
 local RunService = game:GetService("RunService")
 
-local NexusPluginFramework = require(script.Parent.Parent:WaitForChild("NexusPluginComponents"))
+local NexusMotor6DCreatorPlugin = script.Parent.Parent
+local NexusPluginFramework = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"))
 local Header = require(script.Parent:WaitForChild("Row"):WaitForChild("Header"))
 local InstanceRowProperty = require(script.Parent:WaitForChild("Row"):WaitForChild("InstanceRowProperty"))
 local RotationButtonRow = require(script.Parent:WaitForChild("Row"):WaitForChild("RotationButtonRow"))
 local SliderRowProperty = require(script.Parent:WaitForChild("Row"):WaitForChild("SliderRowProperty"))
-local PointSelection = require(script.Parent.Parent:WaitForChild("Geometry"):WaitForChild("PointSelection"))
-local Motor6DVisual = require(script.Parent.Parent:WaitForChild("Geometry"):WaitForChild("Motor6DVisual"))
-local PluginInstance = NexusPluginFramework:GetResource("Base.PluginInstance")
+local PointSelection = require(NexusMotor6DCreatorPlugin:WaitForChild("Geometry"):WaitForChild("PointSelection"))
+local Motor6DVisual = require(NexusMotor6DCreatorPlugin:WaitForChild("Geometry"):WaitForChild("Motor6DVisual"))
+local PluginInstance = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Base"):WaitForChild("PluginInstance"))
 
 local Motor6DView = PluginInstance:Extend()
 Motor6DView:SetClassName("Motor6DView")
+
+export type Motor6DView = {
+    new: (Plugin: Plugin?) -> (Motor6DView),
+    Extend: (self: Motor6DView) -> Motor6DView,
+
+    LoadParts: (self: Motor6DView, Part0: Part, Part1: Part) -> (),
+} & PluginInstance.PluginInstance & Frame
 
 
 
 --[[
 Creates the Motor6D view.
 --]]
-function Motor6DView:__new(Plugin: Plugin?)
+function Motor6DView:__new(Plugin: Plugin?): ()
     PluginInstance.__new(self, "Frame")
     self.BorderSizePixel = 1
 
@@ -290,7 +299,7 @@ end
 --[[
 Updates the current Motor6D for the current parts.
 --]]
-function Motor6DView:UpdateCurrentMotor()
+function Motor6DView:UpdateCurrentMotor(): ()
     --Return if the Part0 or Part1 aren't defined.
     local Part0 = self.Part0Property.Value
     local Part1 = self.Part1Property.Value
@@ -303,7 +312,7 @@ function Motor6DView:UpdateCurrentMotor()
     local MotorFound = false
     Part0 = Part0:GetWrappedInstance()
     Part1 = Part1:GetWrappedInstance()
-    for _, Motor6D in pairs(Workspace:GetDescendants()) do
+    for _, Motor6D in Workspace:GetDescendants() do
         if Motor6D:IsA("Motor6D") then
             if (Motor6D.Part0 == Part0 and Motor6D.Part1 == Part1) or (Motor6D.Part0 == Part1 and Motor6D.Part1 == Part0) then
                 MotorFound = true
@@ -320,7 +329,7 @@ end
 --[[
 Updates the Motor6D preview.
 --]]
-function Motor6DView:UpdatePreview()
+function Motor6DView:UpdatePreview(): ()
     --Hide the preview if the Part0 or Part1 are not defined.
     local Part0 = self.Part0Property.Value
     local Part1 = self.Part1Property.Value
@@ -347,10 +356,10 @@ end
 --[[
 Loads 2 parts.
 --]]
-function Motor6DView:LoadParts(Part0: Part?, Part1: Part?)
+function Motor6DView:LoadParts(Part0: Part, Part1: Part): ()
     --Update the selected motor.
     if Part0 and Part1 then
-        for _, Motor6D in pairs(Workspace:GetDescendants()) do
+        for _, Motor6D in Workspace:GetDescendants() do
             if Motor6D:IsA("Motor6D") then
                 if (Motor6D.Part0 == Part0 and Motor6D.Part1 == Part1) or (Motor6D.Part0 == Part1 and Motor6D.Part1 == Part0) then
                     self.CurrentMotor = Motor6D
@@ -408,4 +417,4 @@ end
 
 
 
-return Motor6DView
+return (Motor6DView :: any) :: Motor6DView

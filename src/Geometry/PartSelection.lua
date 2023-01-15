@@ -3,20 +3,29 @@ TheNexusAvenger
 
 Shows a selection box for selecting parts.
 --]]
+--!strict
 
-local SELECTION_START_COLOR = Color3.new(0, 200 / 255, 0)
-local SELECTION_END_COLOR = Color3.new(1, 1, 1)
+local SELECTION_START_COLOR = Color3.fromRGB(0, 200, 0)
+local SELECTION_END_COLOR = Color3.fromRGB(255, 255, 255)
 
 local CoreGui = game:GetService("CoreGui")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
-local NexusPluginFramework = require(script.Parent.Parent:WaitForChild("NexusPluginComponents"))
-local GetMouseTarget = require(script.Parent.Parent:WaitForChild("Util"):WaitForChild("GetMouseTarget"))
-local NexusInstance = NexusPluginFramework:GetResource("NexusInstance.NexusInstance")
+local NexusMotor6DCreatorPlugin = script.Parent.Parent
+local NexusInstance = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("NexusInstance"):WaitForChild("NexusInstance"))
+local GetMouseTarget = require(NexusMotor6DCreatorPlugin:WaitForChild("Util"):WaitForChild("GetMouseTarget"))
 
 local PartSelection = NexusInstance:Extend()
 PartSelection:SetClassName("PartSelection")
+
+export type PartSelection = {
+    new: () -> (PartSelection),
+    Extend: (self: PartSelection) -> (PartSelection),
+    PromptForPart: () -> (BasePart?),
+
+    PromptSelection: (self: PartSelection) -> (BasePart?),
+} & NexusInstance.NexusInstance
 
 
 
@@ -75,15 +84,15 @@ end
 --[[
 Destroys the part selection.
 --]]
-function PartSelection:Destroy(): nil
+function PartSelection:Destroy(): ()
     NexusInstance.Destroy(self)
 
     self.SelectionBox:Destroy()
-    for _, Event in pairs(self.Events) do
+    for _, Event in self.Events do
         Event:Disconnect()
     end
 end
 
 
 
-return PartSelection
+return (PartSelection :: any) :: PartSelection

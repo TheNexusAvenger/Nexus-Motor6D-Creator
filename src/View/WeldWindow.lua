@@ -3,22 +3,29 @@ TheNexusAvenger
 
 Window for creating welds.
 --]]
+--!strict
 
 local ChangeHistoryService = game:GetService("ChangeHistoryService")
 local Selection = game:GetService("Selection")
 
-local NexusPluginFramework = require(script.Parent.Parent:WaitForChild("NexusPluginComponents"))
-local PluginInstance = NexusPluginFramework:GetResource("Base.PluginInstance")
+local NexusMotor6DCreatorPlugin = script.Parent.Parent
+local NexusPluginFramework = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"))
+local PluginInstance = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Base"):WaitForChild("PluginInstance"))
 
 local WeldWindow = PluginInstance:Extend()
 WeldWindow:SetClassName("WeldWindow")
+
+export type WeldWindow = {
+    new: (Plugin: Plugin) -> (WeldWindow),
+    Extend: (self: WeldWindow) -> (WeldWindow),
+} & PluginInstance.PluginInstance & DockWidgetPluginGui
 
 
 
 --[[
 Creates the Weld window.
 --]]
-function WeldWindow:__new(Plugin: Plugin)
+function WeldWindow:__new(Plugin: Plugin): ()
     PluginInstance.__new(self, Plugin:CreateDockWidgetPluginGui("Weld Creator", DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Float, false, false, 200, 50, 160, 50)))
     self.Title = "Weld Creator"
     self.Name = "Weld Creator"
@@ -60,7 +67,7 @@ function WeldWindow:__new(Plugin: Plugin)
     end)
     Selection.SelectionChanged:Connect(function()
         local NewSelection = {}
-        for _, Part in pairs(Selection:Get()) do
+        for _, Part in Selection:Get() do
             pcall(function()
                 if Part:IsA("BasePart") then
                     table.insert(NewSelection, Part)
@@ -79,7 +86,7 @@ function WeldWindow:__new(Plugin: Plugin)
             if #self.Selection > 1 then
                 ChangeHistoryService:SetWaypoint("NexusMotor6DCreatorBeforeCreateWelds")
                 local StartPart = self.Selection[1]:GetWrappedInstance()
-                for _, WeldPart in pairs(self.Selection) do
+                for _, WeldPart in self.Selection do
                     WeldPart = WeldPart:GetWrappedInstance()
                     if WeldPart ~= StartPart then
                         local Weld = Instance.new("Weld")
@@ -98,4 +105,4 @@ end
 
 
 
-return WeldWindow
+return (WeldWindow :: any) :: WeldWindow

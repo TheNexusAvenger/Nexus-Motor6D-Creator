@@ -3,19 +3,27 @@ TheNexusAvenger
 
 Row of buttons for quickly rotating a rotation slider.
 --]]
+--!strict
 
-local NexusPluginFramework = require(script.Parent.Parent.Parent:WaitForChild("NexusPluginComponents"))
-local PluginInstance = NexusPluginFramework:GetResource("Base.PluginInstance")
+local NexusMotor6DCreatorPlugin = script.Parent.Parent.Parent
+local NexusPluginFramework = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"))
+local PluginInstance = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Base"):WaitForChild("PluginInstance"))
+local SliderRowProperty = require(script.Parent:WaitForChild("SliderRowProperty"))
 
 local RotationButtonRow = PluginInstance:Extend()
 RotationButtonRow:SetClassName("RotationButtonRow")
+
+export type RotationButtonRow = {
+    new: (Text: string, Slider: SliderRowProperty.SliderRowProperty) -> (RotationButtonRow),
+    Extend: (self: RotationButtonRow) -> (RotationButtonRow),
+} & PluginInstance.PluginInstance & Frame
 
 
 
 --[[
 Creates the button row.
 --]]
-function RotationButtonRow:__new(Text, Slider)
+function RotationButtonRow:__new(Text: string, Slider: SliderRowProperty.SliderRowProperty): ()
     PluginInstance.__new(self, "Frame")
 
     --Create the child buttons.
@@ -86,4 +94,4 @@ end
 
 
 
-return RotationButtonRow
+return (RotationButtonRow :: any) :: RotationButtonRow

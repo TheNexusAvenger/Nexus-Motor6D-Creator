@@ -3,6 +3,7 @@ TheNexusAvenger
 
 Runs the Nexus Motor6D Creator plugin.
 --]]
+--!strict
 
 local Selection = game:GetService("Selection")
 
@@ -37,7 +38,7 @@ Motor6DCreatorButton.Click:Connect(function()
     --Get the Motor6D or the first 2 parts in the current selection.
     local Motor6Ds = {}
     local Parts = {}
-    for _, PartOrMotor in pairs(Selection:Get()) do
+    for _, PartOrMotor in Selection:Get() do
         pcall(function()
             if PartOrMotor:IsA("BasePart") then
                 table.insert(Parts, PartOrMotor)
