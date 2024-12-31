@@ -1,8 +1,4 @@
---[[
-TheNexusAvenger
-
-Shows a selection box for selecting parts.
---]]
+--Shows a selection box for selecting parts.
 --!strict
 
 local SELECTION_START_COLOR = Color3.fromRGB(0, 200, 0)
@@ -13,57 +9,50 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
 local NexusMotor6DCreatorPlugin = script.Parent.Parent
-local NexusInstance = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("NexusInstance"):WaitForChild("NexusInstance"))
 local GetMouseTarget = require(NexusMotor6DCreatorPlugin:WaitForChild("Util"):WaitForChild("GetMouseTarget"))
 
-local PartSelection = NexusInstance:Extend()
-PartSelection:SetClassName("PartSelection")
+local PartSelection = {}
+PartSelection.__index = PartSelection
 
 export type PartSelection = {
-    new: () -> (PartSelection),
-    Extend: (self: PartSelection) -> (PartSelection),
-    PromptForPart: () -> (BasePart?),
-
-    PromptSelection: (self: PartSelection) -> (BasePart?),
-} & NexusInstance.NexusInstance
+    SelectionBox: SelectionBox,
+    Selection: BasePart?,
+    EventConnections: {RBXScriptConnection},
+} & typeof(setmetatable({}, PartSelection))
 
 
 
 --[[
 Creates the part selection.
 --]]
-function PartSelection:__new()
-    NexusInstance.__new(self)
-
+function PartSelection.new(): PartSelection
     --Create the selection box.
     local SelectionBox = Instance.new("SelectionBox")
     SelectionBox.Color3 = SELECTION_START_COLOR
     SelectionBox.LineThickness = 0.05
     SelectionBox.Parent = CoreGui
-    self.SelectionBox = SelectionBox
 
-    self.Events = {}
-    table.insert(self.Events, RunService.RenderStepped:Connect(function()
+    --Create the object.
+    local self = setmetatable({
+        SelectionBox = SelectionBox,
+        EventConnections = {},
+    }, PartSelection) :: PartSelection
+
+    --Animate the SelectionBox color.
+    table.insert(self.EventConnections, RunService.RenderStepped:Connect(function()
         SelectionBox.Color3 = SELECTION_START_COLOR:Lerp(SELECTION_END_COLOR, (math.sin((tick() * math.pi) % (math.pi * 2)) + 1) * 0.5)
     end))
-end
 
---[[
-Static function for prompting for a part.
---]]
-function PartSelection.PromptForPart(): BasePart?
-    local Selection = PartSelection.new()
-    local SelectedPart = Selection:PromptSelection()
-    Selection:Destroy()
-    return SelectedPart
+    --Return the object.
+    return self
 end
 
 --[[
 Prompts for a part selection.
 --]]
-function PartSelection:PromptSelection(): BasePart?
+function PartSelection.PromptSelection(self: PartSelection): BasePart?
     --Connect updating the mouse.
-    table.insert(self.Events, UserInputService.InputChanged:Connect(function(Input)
+    table.insert(self.EventConnections, UserInputService.InputChanged:Connect(function(Input)
         if Input.UserInputType ~= Enum.UserInputType.MouseMovement then return end
 
         --Update the selection.
@@ -84,15 +73,16 @@ end
 --[[
 Destroys the part selection.
 --]]
-function PartSelection:Destroy(): ()
-    NexusInstance.Destroy(self)
-
-    self.SelectionBox:Destroy()
-    for _, Event in self.Events do
+function PartSelection.Destroy(self: PartSelection): ()
+    for _, Event in self.EventConnections do
         Event:Disconnect()
     end
+    self.EventConnections = {}
+    
+    self.Selection = nil
+    self.SelectionBox:Destroy()
 end
 
 
 
-return (PartSelection :: any) :: PartSelection
+return PartSelection

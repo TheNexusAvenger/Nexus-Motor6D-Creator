@@ -18,6 +18,8 @@ local SliderRowProperty = require(script.Parent:WaitForChild("Row"):WaitForChild
 local PointSelection = require(NexusMotor6DCreatorPlugin:WaitForChild("Geometry"):WaitForChild("PointSelection"))
 local Motor6DVisual = require(NexusMotor6DCreatorPlugin:WaitForChild("Geometry"):WaitForChild("Motor6DVisual"))
 local PluginInstance = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Base"):WaitForChild("PluginInstance"))
+local Fusion = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Fusion"))
+local CreateFusionScope = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("CreateFusionScope"))
 
 local Motor6DView = PluginInstance:Extend()
 Motor6DView:SetClassName("Motor6DView")
@@ -187,10 +189,11 @@ function Motor6DView:__new(Plugin: Plugin?): ()
     self:DisableChangeReplication("MaxAngleCheckbox")
     self.MaxAngleCheckbox = MaxAngleCheckbox
     self:DisableChangeReplication("Preview")
-    self.Preview = Motor6DVisual.new()
-    self.Preview:GetPropertyChangedSignal("Enabled"):Connect(function()
-        CreateButton.Disabled = not self.Preview.Enabled
+    local Preview = Motor6DVisual.new()
+    CreateFusionScope():Observer(Preview.Enabled):onBind(function()
+        CreateButton.Disabled = not Fusion.peek(Preview.Enabled)
     end)
+    self.Preview = Preview
     self:DisableChangeReplication("PivotPart")
     self:DisableChangeReplication("CurrentMotor")
 
@@ -220,6 +223,7 @@ function Motor6DView:__new(Plugin: Plugin?): ()
             SelectPivotDB = false
             if CurrentSelection then
                 CurrentSelection:Destroy()
+                CurrentSelection = nil
             end
 
             --Start the new selection.
@@ -230,8 +234,7 @@ function Motor6DView:__new(Plugin: Plugin?): ()
             end
             task.spawn(function()
                 --Get the selection.
-                local SelectionCFrame = NewSelection:PromptSelection()
-                local SelectionPart = NewSelection.LastPart
+                local SelectionPart, SelectionCFrame = NewSelection:PromptSelection()
                 if NewSelection ~= CurrentSelection then return end
 
                 --Update the sliders.
@@ -257,7 +260,7 @@ function Motor6DView:__new(Plugin: Plugin?): ()
 
     local CreateDB = true
     CreateButton.MouseButton1Down:Connect(function()
-        if CreateDB and self.Preview.Enabled then
+        if CreateDB and Fusion.peek(self.Preview.Enabled) then
             CreateDB = false
 
             local Part0, Part1 = Part0PropertyRow.Value, Part1PropertyRow.Value
@@ -273,8 +276,8 @@ function Motor6DView:__new(Plugin: Plugin?): ()
                 end
 
                 --Update the motor.
-                self.CurrentMotor.C0 = self.Preview.C0
-                self.CurrentMotor.C1 = self.Preview.C1
+                self.CurrentMotor.C0 = Fusion.peek(self.Preview.C0)
+                self.CurrentMotor.C1 = Fusion.peek(self.Preview.C1)
                 self.CurrentMotor.MaxVelocity = MaxVelocitySlider.Value
                 if MaxAngleCheckbox.Value == "Checked" then
                     self.CurrentMotor.DesiredAngle = 2 ^ 1000
@@ -335,10 +338,10 @@ function Motor6DView:UpdatePreview(): ()
     local Part1 = self.Part1Property.Value
     local PivotPart = self.PivotPart
     if not Part0 or not Part1 or not PivotPart then
-        self.Preview.Enabled = false
+        self.Preview.Enabled:set(false)
         return
     end
-    self.Preview.Enabled = (self.Parent and self.Parent.Enabled)
+    self.Preview.Enabled:set(self.Parent and self.Parent.Enabled)
 
     --Update the preview.
     local Pivot = PivotPart.CFrame * CFrame.new(PivotPart.Size * Vector3.new(self.PositionXSlider.Value, self.PositionYSlider.Value, self.PositionZSlider.Value))
@@ -347,10 +350,10 @@ function Motor6DView:UpdatePreview(): ()
         Pivot = CFrame.new(Pivot.Position)
     end
     Pivot = Pivot * Rotation
-    self.Preview.StartCFrame = Part0.CFrame
-    self.Preview.C0 = Part0.CFrame:Inverse() * Pivot
-    self.Preview.C1 = Part1.CFrame:Inverse() * Pivot
-    self.Preview.Velocity = self.MaxVelocitySlider.Value
+    self.Preview.StartCFrame:set(Part0.CFrame)
+    self.Preview.C0:set(Part0.CFrame:Inverse() * Pivot)
+    self.Preview.C1:set(Part1.CFrame:Inverse() * Pivot)
+    self.Preview.Velocity:set(self.MaxVelocitySlider.Value)
 end
 
 --[[

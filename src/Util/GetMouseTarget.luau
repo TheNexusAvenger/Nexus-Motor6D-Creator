@@ -1,8 +1,4 @@
---[[
-TheNexusAvenger
-
-Returns the part the mouse is hovering over.
---]]
+--Returns the part the mouse is hovering over.
 --!strict
 
 local Workspace = game:GetService("Workspace")
@@ -18,7 +14,7 @@ return function(X: number, Y: number): BasePart?
     local IgnoreList = {}
     local RaycastResult = nil
     local RaycastParameters = RaycastParams.new()
-    RaycastParameters.FilterType = Enum.RaycastFilterType.Blacklist
+    RaycastParameters.FilterType = Enum.RaycastFilterType.Exclude
     RaycastParameters.FilterDescendantsInstances = IgnoreList
     RaycastParameters.IgnoreWater = true
     repeat
