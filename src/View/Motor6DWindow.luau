@@ -100,9 +100,6 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
     local CreateButtonEnabled = Scope:Computed(function(use)
         return use(Part0) ~= nil and use(Part1) ~= nil
     end)
-    local CreateButtonModifier = Scope:Computed(function(use)
-        return use(CreateButtonEnabled) and Enum.StudioStyleGuideModifier.Default or Enum.StudioStyleGuideModifier.Disabled
-    end)
     local CurrentPivotSelection: PointSelection.PointSelection? = nil
     task.spawn(function()
         --Wait for the window to become visible.
@@ -183,16 +180,16 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
                 }),
 
                 --Create/update button.
-                Scope:Create("TextButton")({
-                    BackgroundColor3 = Scope:PluginColor(Enum.StudioStyleGuideColor.DialogMainButton, CreateButtonModifier),
-                    BorderColor3 = Scope:PluginColor(Enum.StudioStyleGuideColor.DialogButtonBorder, CreateButtonModifier),
+                Scope:Create("TextButton", CreateButtonEnabled)({
+                    BackgroundColor3 = Enum.StudioStyleGuideColor.DialogMainButton,
+                    BorderColor3 = Enum.StudioStyleGuideColor.DialogButtonBorder,
                     Size = UDim2.new(0, 90, 0, 22),
                     AnchorPoint = Vector2.new(0.5, 0),
                     Position = UDim2.new(0.3, 0, 0, 370),
                     Text = Scope:Computed(function(use)
                         return use(Motor6D) and "Update" or "Create"
                     end),
-                    TextColor3 = Scope:PluginColor(Enum.StudioStyleGuideColor.DialogMainButtonText, CreateButtonModifier),
+                    TextColor3 = Enum.StudioStyleGuideColor.DialogMainButtonText,
                     [OnEvent("MouseButton1Down")] = function()
                         local CurrentPart0, CurrentPart1 = Fusion.peek(Part0), Fusion.peek(Part1)
                         if not CurrentPart0 or not CurrentPart1 then return end
@@ -221,13 +218,13 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
 
                 --Select pivot button.
                 Scope:Create("TextButton")({
-                    BackgroundColor3 = Scope:PluginColor(Enum.StudioStyleGuideColor.DialogButton),
-                    BorderColor3 = Scope:PluginColor(Enum.StudioStyleGuideColor.DialogButtonBorder),
+                    BackgroundColor3 = Enum.StudioStyleGuideColor.DialogButton,
+                    BorderColor3 = Enum.StudioStyleGuideColor.DialogButtonBorder,
                     Size = UDim2.new(0, 90, 0, 22),
                     AnchorPoint = Vector2.new(0.5, 0),
                     Position = UDim2.new(0.7, 0, 0, 370),
                     Text = "Select Pivot",
-                    TextColor3 = Scope:PluginColor(Enum.StudioStyleGuideColor.DialogButtonText),
+                    TextColor3 = Enum.StudioStyleGuideColor.DialogButtonText,
                     [OnEvent("MouseButton1Down")] = function()
                         --Clear the previous selection.
                         if CurrentPivotSelection then
@@ -288,7 +285,7 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
                         --"may be" is used because there is no check if the part is connected to a Motor6D as opposed to a weld.
                         return "Both parts may be anchored."
                     end),
-                    TextColor3 = Scope:PluginColor(Enum.StudioStyleGuideColor.WarningText),
+                    TextColor3 = Enum.StudioStyleGuideColor.WarningText,
                 }),
             },
         })

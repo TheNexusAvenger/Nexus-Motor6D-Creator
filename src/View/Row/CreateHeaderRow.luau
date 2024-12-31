@@ -12,7 +12,7 @@ return function(Scope: CreateFusionScope.FusionScope, Text: Fusion.UsedAs<string
         Size = UDim2.new(1, -2, 0, 22),
         [Children] = {
             Scope:Create("Frame")({
-                BackgroundColor3 = Scope:PluginColor(Enum.StudioStyleGuideColor.HeaderSection),
+                BackgroundColor3 = Enum.StudioStyleGuideColor.HeaderSection,
                 BorderSizePixel = 1,
                 Size = UDim2.new(1, 0, 1, 0),
                 ClipsDescendants = true,

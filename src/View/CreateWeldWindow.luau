@@ -42,9 +42,6 @@ return function(Plugin: Plugin): DockWidgetPluginGui
         local CanWeldParts = Scope:Computed(function(use)
             return #use(PartSelection) > 1
         end)
-        local WeldButtonModifier = Scope:Computed(function(use)
-            return use(CanWeldParts) and Enum.StudioStyleGuideModifier.Default or Enum.StudioStyleGuideModifier.Disabled
-        end)
         
         Scope:Create("Frame")({
             Size = UDim2.new(1, 0, 1, 0),
@@ -65,15 +62,13 @@ return function(Plugin: Plugin): DockWidgetPluginGui
                     end),
                 }),
                 
-                Scope:Create("TextButton")({
-                    BackgroundColor3 = Scope:PluginColor(Enum.StudioStyleGuideColor.DialogMainButton, WeldButtonModifier),
-                    BorderColor3 = Scope:PluginColor(Enum.StudioStyleGuideColor.DialogButtonBorder, WeldButtonModifier),
+                Scope:Create("TextButton", CanWeldParts)({
+                    BackgroundColor3 = Enum.StudioStyleGuideColor.DialogMainButton,
+                    BorderColor3 = Enum.StudioStyleGuideColor.DialogButtonBorder,
                     Size = UDim2.new(0, 80, 0, 22),
                     AnchorPoint = Vector2.new(0.5, 0),
                     Position = UDim2.new(0.5, 0, 0, 24),
-                    Active = CanWeldParts,
-                    AutoButtonColor = CanWeldParts,
-                    TextColor3 = Scope:PluginColor(Enum.StudioStyleGuideColor.DialogMainButtonText, WeldButtonModifier),
+                    TextColor3 = Enum.StudioStyleGuideColor.DialogMainButtonText,
                     Text = "Weld",
                     [OnEvent("MouseButton1Down")] = function()
                         local CurrentPartSelection = Fusion.peek(PartSelection)
