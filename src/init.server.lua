@@ -22,18 +22,18 @@ local Motor6DCreatorToolbar = plugin:CreateToolbar("Motor6D Creator")
 local Motor6DCreatorButton = Motor6DCreatorToolbar:CreateButton("Motor6D Creator", "Opens the window for creating Motor6Ds.", "rbxassetid://9414272825")
 local WeldCreatorButton = Motor6DCreatorToolbar:CreateButton("Weld Creator", "Toggles the window for creating welds.", "rbxassetid://9414273305")
 NexusPluginComponents.new("PluginToggleButton", WeldCreatorButton, WeldWindow)
-if MotorView.Enabled then
+if MotorView.Window.Enabled then
     Motor6DCreatorButton:SetActive(true)
 end
 
 --Connect the toolbar.
-MotorView:GetPropertyChangedSignal("Enabled"):Connect(function()
-    Motor6DCreatorButton:SetActive(MotorView.Enabled)
+MotorView.Window:GetPropertyChangedSignal("Enabled"):Connect(function()
+    Motor6DCreatorButton:SetActive(MotorView.Window.Enabled)
 end)
 
 Motor6DCreatorButton.Click:Connect(function()
     --Show the window.
-    MotorView.Enabled = true
+    MotorView.Window.Enabled = true
 
     --Get the Motor6D or the first 2 parts in the current selection.
     local Motor6Ds = {}
@@ -51,8 +51,8 @@ Motor6DCreatorButton.Click:Connect(function()
         end
     end
     if #Motor6Ds > 0 then
-        MotorView.View:LoadParts(Motor6Ds[1].Part0, Motor6Ds[1].Part1)
+        MotorView:LoadParts(Motor6Ds[1].Part0, Motor6Ds[1].Part1)
     elseif #Parts > 0 then
-        MotorView.View:LoadParts(Parts[1], Parts[2])
+        MotorView:LoadParts(Parts[1], Parts[2])
     end
 end)
