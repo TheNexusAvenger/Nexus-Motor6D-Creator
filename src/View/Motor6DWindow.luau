@@ -91,6 +91,8 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
         if not CurrentPart0CFrame or not CurrentPart1CFrame then return CFrame.identity end
         return CurrentPart1CFrame:Inverse() * (CurrentPart0CFrame * use(C0))
     end)
+    local Part0AssemblyRootPartAnchored = Scope:ValueFromProperty(Scope:ValueFromProperty(Part0, "AssemblyRootPart"), "Anchored") :: Fusion.Value<boolean?>
+    local Part1AssemblyRootPartAnchored = Scope:ValueFromProperty(Scope:ValueFromProperty(Part1, "AssemblyRootPart"), "Anchored") :: Fusion.Value<boolean?>
 
     --Create the view.
     local CreateButtonEnabled = Scope:Computed(function(use)
@@ -268,6 +270,17 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
                     Position = UDim2.new(0, 24, 0, 400),
                     Text = "Set the desired angle to spin forever.",
                     TextXAlignment = Enum.TextXAlignment.Left,
+                }),
+
+                --Anchored part warning.
+                Scope:Create("TextLabel")({
+                    Size = UDim2.new(1, -4, 0, 13),
+                    Position = UDim2.new(0, 2, 0, 420),
+                    Visible = Scope:Computed(function(use)
+                        return use(Part0AssemblyRootPartAnchored) and use(Part1AssemblyRootPartAnchored)
+                    end),
+                    Text = "Both parts are currently anchored.",
+                    TextColor3 = Scope:PluginColor(Enum.StudioStyleGuideColor.WarningText),
                 }),
             },
         })
