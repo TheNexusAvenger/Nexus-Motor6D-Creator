@@ -62,6 +62,7 @@ return function(Scope: CreateFusionScope.FusionScope, PropertyName: Fusion.UsedA
                         if Plugin then
                             Plugin:Deactivate()
                         end
+                        NewSelection:Destroy()
                     else
                         --Cancel the selection.
                         if not CurrentPartSelection then return end
