@@ -91,6 +91,8 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
         if not CurrentPart0CFrame or not CurrentPart1CFrame then return CFrame.identity end
         return CurrentPart1CFrame:Inverse() * (CurrentPart0CFrame * use(C0))
     end)
+    local Part0Anchored = Scope:ValueFromProperty(Part0, "Anchored") :: Fusion.Value<boolean?>
+    local Part1Anchored = Scope:ValueFromProperty(Part1, "Anchored") :: Fusion.Value<boolean?>
     local Part0AssemblyRootPartAnchored = Scope:ValueFromProperty(Scope:ValueFromProperty(Part0, "AssemblyRootPart"), "Anchored") :: Fusion.Value<boolean?>
     local Part1AssemblyRootPartAnchored = Scope:ValueFromProperty(Scope:ValueFromProperty(Part1, "AssemblyRootPart"), "Anchored") :: Fusion.Value<boolean?>
 
@@ -279,7 +281,13 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
                     Visible = Scope:Computed(function(use)
                         return use(Part0AssemblyRootPartAnchored) and use(Part1AssemblyRootPartAnchored)
                     end),
-                    Text = "Both parts are currently anchored.",
+                    Text = Scope:Computed(function(use)
+                        if use(Part0Anchored) and use(Part1Anchored) then
+                            return "Both parts are anchored."
+                        end
+                        --"may be" is used because there is no check if the part is connected to a Motor6D as opposed to a weld.
+                        return "Both parts may be anchored."
+                    end),
                     TextColor3 = Scope:PluginColor(Enum.StudioStyleGuideColor.WarningText),
                 }),
             },
