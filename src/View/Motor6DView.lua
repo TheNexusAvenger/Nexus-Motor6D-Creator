@@ -11,10 +11,10 @@ local RunService = game:GetService("RunService")
 
 local NexusMotor6DCreatorPlugin = script.Parent.Parent
 local NexusPluginFramework = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"))
-local Header = require(script.Parent:WaitForChild("Row"):WaitForChild("Header"))
-local InstanceRowProperty = require(script.Parent:WaitForChild("Row"):WaitForChild("InstanceRowProperty"))
-local RotationButtonRow = require(script.Parent:WaitForChild("Row"):WaitForChild("RotationButtonRow"))
-local SliderRowProperty = require(script.Parent:WaitForChild("Row"):WaitForChild("SliderRowProperty"))
+local CreateHeaderRow = require(script.Parent:WaitForChild("Row"):WaitForChild("CreateHeaderRow"))
+local CreateInstancePropertyRow = require(script.Parent:WaitForChild("Row"):WaitForChild("CreateInstancePropertyRow"))
+local CreateRotationButtonRow = require(script.Parent:WaitForChild("Row"):WaitForChild("CreateRotationButtonRow"))
+local CreateSliderPropertyRow = require(script.Parent:WaitForChild("Row"):WaitForChild("CreateSliderPropertyRow"))
 local PointSelection = require(NexusMotor6DCreatorPlugin:WaitForChild("Geometry"):WaitForChild("PointSelection"))
 local Motor6DVisual = require(NexusMotor6DCreatorPlugin:WaitForChild("Geometry"):WaitForChild("Motor6DVisual"))
 local PluginInstance = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Base"):WaitForChild("PluginInstance"))
@@ -41,75 +41,64 @@ function Motor6DView:__new(Plugin: Plugin?): ()
     self.BorderSizePixel = 1
 
     --Create the part property rows.
-    local PartPropertiesHeader = Header.new()
-    PartPropertiesHeader.Text = "Parts"
-    PartPropertiesHeader.Parent = self
+    local Scope = CreateFusionScope()
+    local PartPropertiesHeader = CreateHeaderRow(Scope, "Parts")
+    PartPropertiesHeader.Parent = self:GetWrappedInstance()
 
-    local Part0PropertyRow = InstanceRowProperty.new()
+    local Part0 = Scope:Value(nil :: BasePart?)
+    local Part0PropertyRow = CreateInstancePropertyRow(Scope, "Part0", Plugin, Part0)
     Part0PropertyRow.Position = UDim2.new(0, 0, 0, 23 * 1)
-    Part0PropertyRow.Text = "Part0"
-    Part0PropertyRow.Plugin = Plugin
-    Part0PropertyRow.Parent = self
+    Part0PropertyRow.Parent = self:GetWrappedInstance()
 
-    local Part1PropertyRow = InstanceRowProperty.new()
+    local Part1 = Scope:Value(nil :: BasePart?)
+    local Part1PropertyRow = CreateInstancePropertyRow(Scope, "Part1", Plugin, Part1)
     Part1PropertyRow.Position = UDim2.new(0, 0, 0, 23 * 2)
-    Part1PropertyRow.Text = "Part1"
-    Part0PropertyRow.Plugin = Plugin
-    Part1PropertyRow.Parent = self
+    Part1PropertyRow.Parent = self:GetWrappedInstance()
 
     --Create the position property rows.
-    local PositionPropertiesHeader = Header.new()
+    local PositionPropertiesHeader = CreateHeaderRow(Scope, "Position Offset")
     PositionPropertiesHeader.Position = UDim2.new(0, 0, 0, 23 * 3)
-    PositionPropertiesHeader.Text = "Position Offset"
-    PositionPropertiesHeader.Parent = self
+    PositionPropertiesHeader.Parent = self:GetWrappedInstance()
 
-    local PositionXSlider = SliderRowProperty.new()
+    local PositionXOffset = Scope:Value(0)
+    local PositionXSlider = CreateSliderPropertyRow(Scope, "X AXis", PositionXOffset)
     PositionXSlider.Position = UDim2.new(0, 0, 0, 23 * 4)
-    PositionXSlider.Text = "X Axis"
-    PositionXSlider.Parent = self
+    PositionXSlider.Parent = self:GetWrappedInstance()
 
-    local PositionYSlider = SliderRowProperty.new()
+    local PositionYOffset = Scope:Value(0)
+    local PositionYSlider = CreateSliderPropertyRow(Scope, "Y Axis", PositionYOffset)
     PositionYSlider.Position = UDim2.new(0, 0, 0, 23 * 5)
-    PositionYSlider.Text = "Y Axis"
-    PositionYSlider.Parent = self
+    PositionYSlider.Parent = self:GetWrappedInstance()
 
-    local PositionZSlider = SliderRowProperty.new()
+    local PositionZOffset = Scope:Value(0)
+    local PositionZSlider = CreateSliderPropertyRow(Scope, "Z Axis", PositionZOffset)
     PositionZSlider.Position = UDim2.new(0, 0, 0, 23 * 6)
-    PositionZSlider.Text = "Z Axis"
-    PositionZSlider.Parent = self
+    PositionZSlider.Parent = self:GetWrappedInstance()
 
     --Create the rotation property rows.
-    local RotationPropertiesHeader = Header.new()
+    local RotationPropertiesHeader = CreateHeaderRow(Scope, "Rotation Offset")
     RotationPropertiesHeader.Position = UDim2.new(0, 0, 0, 23 * 7)
-    RotationPropertiesHeader.Text = "Rotation Offset"
-    RotationPropertiesHeader.Parent = self
+    RotationPropertiesHeader.Parent = self:GetWrappedInstance()
 
-    local RotationXSlider = SliderRowProperty.new()
+    local RotationXAngle = Scope:Value(0)
+    local RotationXSlider = CreateSliderPropertyRow(Scope, "X Axis", RotationXAngle, NumberRange.new(-180, 180))
     RotationXSlider.Position = UDim2.new(0, 0, 0, 23 * 8)
-    RotationXSlider.Text = "X Axis"
-    RotationXSlider.MinimumValue = -180
-    RotationXSlider.MaximumValue = 180
-    RotationXSlider.Parent = self
+    RotationXSlider.Parent = self:GetWrappedInstance()
 
-    local RotationYSlider = SliderRowProperty.new()
+    local RotationYAngle = Scope:Value(0)
+    local RotationYSlider = CreateSliderPropertyRow(Scope, "Y Axis", RotationYAngle, NumberRange.new(-180, 180))
     RotationYSlider.Position = UDim2.new(0, 0, 0, 23 * 9)
-    RotationYSlider.Text = "Y Axis"
-    RotationYSlider.MinimumValue = -180
-    RotationYSlider.MaximumValue = 180
-    RotationYSlider.Parent = self
+    RotationYSlider.Parent = self:GetWrappedInstance()
 
     --Create the motor property rows.
-    local MotorPropertiesHeader = Header.new()
+    local MotorPropertiesHeader = CreateHeaderRow(Scope, "Motor")
     MotorPropertiesHeader.Position = UDim2.new(0, 0, 0, 23 * 10)
-    MotorPropertiesHeader.Text = "Motor"
-    MotorPropertiesHeader.Parent = self
+    MotorPropertiesHeader.Parent = self:GetWrappedInstance()
 
-    local MaxVelocitySlider = SliderRowProperty.new()
+    local MaxVelocity = Scope:Value(0)
+    local MaxVelocitySlider = CreateSliderPropertyRow(Scope, "MaxVelocity", MaxVelocity, NumberRange.new(0, 0.25))
     MaxVelocitySlider.Position = UDim2.new(0, 0, 0, 23 * 11)
-    MaxVelocitySlider.Text = "MaxVelocity"
-    MaxVelocitySlider.MinimumValue = 0
-    MaxVelocitySlider.MaximumValue = 0.25
-    MaxVelocitySlider.Parent = self
+    MaxVelocitySlider.Parent = self:GetWrappedInstance()
 
     --Create the toggle for local/global rotation.
     local LocalSpaceCheckbox = NexusPluginFramework.new("Checkbox")
@@ -125,13 +114,13 @@ function Motor6DView:__new(Plugin: Plugin?): ()
     LocalSpaceText.Parent = self
 
     --Create the slider toggle buttons.
-    local XAxisButtons = RotationButtonRow.new("X Axis", RotationXSlider)
+    local XAxisButtons = CreateRotationButtonRow(Scope, "X Axis", RotationXAngle)
     XAxisButtons.Position = UDim2.new(0, 0, 0, 300)
-    XAxisButtons.Parent = self
+    XAxisButtons.Parent = self:GetWrappedInstance()
 
-    local YAxisButtons = RotationButtonRow.new("Y Axis", RotationYSlider)
+    local YAxisButtons = CreateRotationButtonRow(Scope, "Y Axis", RotationYAngle)
     YAxisButtons.Position = UDim2.new(0, 0, 0, 300 + (24 * 1))
-    YAxisButtons.Parent = self
+    YAxisButtons.Parent = self:GetWrappedInstance()
 
     --Create the lower buttons.
     local CreateButton = NexusPluginFramework.new("TextButton")
@@ -169,28 +158,28 @@ function Motor6DView:__new(Plugin: Plugin?): ()
 
     --Add the custom properties.
     self:DisableChangeReplication("Part0Property")
-    self.Part0Property = Part0PropertyRow
+    self.Part0Property = Part0
     self:DisableChangeReplication("Part1Property")
-    self.Part1Property = Part1PropertyRow
-    self:DisableChangeReplication("PositionXSlider")
-    self.PositionXSlider = PositionXSlider
-    self:DisableChangeReplication("PositionYSlider")
-    self.PositionYSlider = PositionYSlider
-    self:DisableChangeReplication("PositionZSlider")
-    self.PositionZSlider = PositionZSlider
-    self:DisableChangeReplication("RotationXSlider")
-    self.RotationXSlider = RotationXSlider
-    self:DisableChangeReplication("RotationYSlider")
-    self.RotationYSlider = RotationYSlider
-    self:DisableChangeReplication("MaxVelocitySlider")
-    self.MaxVelocitySlider = MaxVelocitySlider
+    self.Part1Property = Part1
+    self:DisableChangeReplication("PositionXOffset")
+    self.PositionXOffset = PositionXOffset
+    self:DisableChangeReplication("PositionYOffset")
+    self.PositionYOffset = PositionYOffset
+    self:DisableChangeReplication("PositionZOffset")
+    self.PositionZOffset = PositionZOffset
+    self:DisableChangeReplication("RotationXAngle")
+    self.RotationXAngle = RotationXAngle
+    self:DisableChangeReplication("RotationYAngle")
+    self.RotationYAngle = RotationYAngle
+    self:DisableChangeReplication("MaxVelocity")
+    self.MaxVelocity = MaxVelocity
     self:DisableChangeReplication("LocalSpaceCheckbox")
     self.LocalSpaceCheckbox = LocalSpaceCheckbox
     self:DisableChangeReplication("MaxAngleCheckbox")
     self.MaxAngleCheckbox = MaxAngleCheckbox
     self:DisableChangeReplication("Preview")
     local Preview = Motor6DVisual.new()
-    CreateFusionScope():Observer(Preview.Enabled):onBind(function()
+    Scope:Observer(Preview.Enabled):onBind(function()
         CreateButton.Disabled = not Fusion.peek(Preview.Enabled)
     end)
     self.Preview = Preview
@@ -199,18 +188,20 @@ function Motor6DView:__new(Plugin: Plugin?): ()
 
     --Connect updating the pivot part.
     local LastPart0, LastPart1 = nil, nil
-    Part0PropertyRow:GetPropertyChangedSignal("Value"):Connect(function()
+    Scope:Observer(Part0):onChange(function()
+        local CurrentPart0 = Fusion.peek(Part0)
         if self.PivotPart and self.PivotPart == LastPart0 then
-            self.PivotPart = Part0PropertyRow.Value
+            self.PivotPart = CurrentPart0
         end
-        LastPart0 = Part0PropertyRow.Value
+        LastPart0 = CurrentPart0
         self:UpdateCurrentMotor()
     end)
-    Part1PropertyRow:GetPropertyChangedSignal("Value"):Connect(function()
+    Scope:Observer(Part1):onChange(function()
+        local CurrentPart1 = Fusion.peek(Part1)
         if not self.PivotPart or (self.PivotPart and self.PivotPart == LastPart1) then
-            self.PivotPart = Part1PropertyRow.Value
+            self.PivotPart = CurrentPart1
         end
-        LastPart1 = Part1PropertyRow.Value
+        LastPart1 = CurrentPart1
         self:UpdateCurrentMotor()
     end)
 
@@ -240,9 +231,9 @@ function Motor6DView:__new(Plugin: Plugin?): ()
                 --Update the sliders.
                 if SelectionCFrame and SelectionPart then
                     local RelativeCFrame = SelectionPart.CFrame:Inverse() * SelectionCFrame
-                    PositionXSlider.Value = RelativeCFrame.X / SelectionPart.Size.X
-                    PositionYSlider.Value = RelativeCFrame.Y / SelectionPart.Size.Y
-                    PositionZSlider.Value = RelativeCFrame.Z / SelectionPart.Size.Z
+                    PositionXOffset:set(RelativeCFrame.X / SelectionPart.Size.X)
+                    PositionYOffset:set(RelativeCFrame.Y / SelectionPart.Size.Y)
+                    PositionZOffset:set(RelativeCFrame.Z / SelectionPart.Size.Z)
                     self.PivotPart = SelectionPart
                 end
 
@@ -263,14 +254,14 @@ function Motor6DView:__new(Plugin: Plugin?): ()
         if CreateDB and Fusion.peek(self.Preview.Enabled) then
             CreateDB = false
 
-            local Part0, Part1 = Part0PropertyRow.Value, Part1PropertyRow.Value
+            local Part0, Part1 = Fusion.peek(Part0), Fusion.peek(Part1)
             if Part0 and Part1 then
                 --Create the motor.
                 ChangeHistoryService:SetWaypoint("NexusMotor6DCreatorBeforeSetMotor")
                 if not self.CurrentMotor then
                     local Motor6D = Instance.new("Motor6D")
-                    Motor6D.Part0 = Part0:GetWrappedInstance()
-                    Motor6D.Part1 = Part1:GetWrappedInstance()
+                    Motor6D.Part0 = Part0
+                    Motor6D.Part1 = Part1
                     Motor6D.Parent = Motor6D.Part0
                     self.CurrentMotor = Motor6D
                 end
@@ -278,7 +269,7 @@ function Motor6DView:__new(Plugin: Plugin?): ()
                 --Update the motor.
                 self.CurrentMotor.C0 = Fusion.peek(self.Preview.C0)
                 self.CurrentMotor.C1 = Fusion.peek(self.Preview.C1)
-                self.CurrentMotor.MaxVelocity = MaxVelocitySlider.Value
+                self.CurrentMotor.MaxVelocity = Fusion.peek(MaxVelocity)
                 if MaxAngleCheckbox.Value == "Checked" then
                     self.CurrentMotor.DesiredAngle = 2 ^ 1000
                 end
@@ -304,8 +295,8 @@ Updates the current Motor6D for the current parts.
 --]]
 function Motor6DView:UpdateCurrentMotor(): ()
     --Return if the Part0 or Part1 aren't defined.
-    local Part0 = self.Part0Property.Value
-    local Part1 = self.Part1Property.Value
+    local Part0 = Fusion.peek(self.Part0Property)
+    local Part1 = Fusion.peek(self.Part1Property)
     if not Part0 or not Part1 then
         self.CurrentMotor = nil
         return
@@ -313,8 +304,6 @@ function Motor6DView:UpdateCurrentMotor(): ()
 
     --Set the motor in Workspace where the Part0 and Part1 match.
     local MotorFound = false
-    Part0 = Part0:GetWrappedInstance()
-    Part1 = Part1:GetWrappedInstance()
     for _, Motor6D in Workspace:GetDescendants() do
         if Motor6D:IsA("Motor6D") then
             if (Motor6D.Part0 == Part0 and Motor6D.Part1 == Part1) or (Motor6D.Part0 == Part1 and Motor6D.Part1 == Part0) then
@@ -334,8 +323,8 @@ Updates the Motor6D preview.
 --]]
 function Motor6DView:UpdatePreview(): ()
     --Hide the preview if the Part0 or Part1 are not defined.
-    local Part0 = self.Part0Property.Value
-    local Part1 = self.Part1Property.Value
+    local Part0 = Fusion.peek(self.Part0Property)
+    local Part1 = Fusion.peek(self.Part1Property)
     local PivotPart = self.PivotPart
     if not Part0 or not Part1 or not PivotPart then
         self.Preview.Enabled:set(false)
@@ -344,8 +333,8 @@ function Motor6DView:UpdatePreview(): ()
     self.Preview.Enabled:set(self.Parent and self.Parent.Enabled)
 
     --Update the preview.
-    local Pivot = PivotPart.CFrame * CFrame.new(PivotPart.Size * Vector3.new(self.PositionXSlider.Value, self.PositionYSlider.Value, self.PositionZSlider.Value))
-    local Rotation = CFrame.Angles(math.rad(self.RotationXSlider.Value), math.rad(self.RotationYSlider.Value), 0)
+    local Pivot = PivotPart.CFrame * CFrame.new(PivotPart.Size * Vector3.new(Fusion.peek(self.PositionXOffset), Fusion.peek(self.PositionYOffset), Fusion.peek(self.PositionZOffset)))
+    local Rotation = CFrame.Angles(math.rad(Fusion.peek(self.RotationXAngle)), math.rad(Fusion.peek(self.RotationYAngle)), 0)
     if self.LocalSpaceCheckbox.Value ~= "Checked" then
         Pivot = CFrame.new(Pivot.Position)
     end
@@ -353,7 +342,7 @@ function Motor6DView:UpdatePreview(): ()
     self.Preview.StartCFrame:set(Part0.CFrame)
     self.Preview.C0:set(Part0.CFrame:Inverse() * Pivot)
     self.Preview.C1:set(Part1.CFrame:Inverse() * Pivot)
-    self.Preview.Velocity:set(self.MaxVelocitySlider.Value)
+    self.Preview.Velocity:set(Fusion.peek(self.MaxVelocity))
 end
 
 --[[
@@ -375,8 +364,8 @@ function Motor6DView:LoadParts(Part0: Part, Part1: Part): ()
     end
 
     --Set the part selection values.
-    self.Part0Property.Value = Part0
-    self.Part1Property.Value = Part1
+    self.Part0Property:set(Part0)
+    self.Part1Property:set(Part1)
 
     --Set the sliders.
     local CurrentMotor = self.CurrentMotor
@@ -397,21 +386,21 @@ function Motor6DView:LoadParts(Part0: Part, Part1: Part): ()
         --Set the sliders.
         local PivotRelativeCFrame = PivotPart.CFrame:Inverse() * PivotCFrame
         local AngleX, AngleY, _ = PivotRelativeCFrame:ToEulerAnglesXYZ()
-        self.PositionXSlider.Value = PivotRelativeCFrame.X / PivotPart.Size.X
-        self.PositionYSlider.Value = PivotRelativeCFrame.Y / PivotPart.Size.Y
-        self.PositionZSlider.Value = PivotRelativeCFrame.Z / PivotPart.Size.Z
-        self.RotationXSlider.Value = math.deg(AngleX)
-        self.RotationYSlider.Value = math.deg(AngleY)
-        self.MaxVelocitySlider.Value = CurrentMotor.MaxVelocity
+        self.PositionXOffset:set(PivotRelativeCFrame.X / PivotPart.Size.X)
+        self.PositionYOffset:set(PivotRelativeCFrame.Y / PivotPart.Size.Y)
+        self.PositionZOffset:set(PivotRelativeCFrame.Z / PivotPart.Size.Z)
+        self.RotationXAngle:set(math.deg(AngleX))
+        self.RotationYAngle:set(math.deg(AngleY))
+        self.MaxVelocity:set(CurrentMotor.MaxVelocity)
         self.PivotPart = PivotPart
     else
         --Reset the sliders.
-        self.PositionXSlider.Value = 0
-        self.PositionYSlider.Value = 0
-        self.PositionZSlider.Value = 0
-        self.RotationXSlider.Value = 0
-        self.RotationYSlider.Value = 0
-        self.MaxVelocitySlider.Value = 0
+        self.PositionXOffset:set(0)
+        self.PositionYOffset:set(0)
+        self.PositionZOffset:set(0)
+        self.RotationXAngle:set(0)
+        self.RotationYAngle:set(0)
+        self.MaxVelocity:set(0)
         self.PivotPart = Part1
     end
     self.LocalSpaceCheckbox.Value = "Checked"
