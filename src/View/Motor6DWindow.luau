@@ -93,8 +93,6 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
     end)
     local Part0Anchored = Scope:ValueFromProperty(Part0, "Anchored") :: Fusion.Value<boolean?>
     local Part1Anchored = Scope:ValueFromProperty(Part1, "Anchored") :: Fusion.Value<boolean?>
-    local Part0AssemblyRootPartAnchored = Scope:ValueFromProperty(Scope:ValueFromProperty(Part0, "AssemblyRootPart"), "Anchored") :: Fusion.Value<boolean?>
-    local Part1AssemblyRootPartAnchored = Scope:ValueFromProperty(Scope:ValueFromProperty(Part1, "AssemblyRootPart"), "Anchored") :: Fusion.Value<boolean?>
 
     --Create the view.
     local CreateButtonEnabled = Scope:Computed(function(use)
@@ -274,15 +272,9 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
                     Size = UDim2.new(1, -4, 0, 13),
                     Position = UDim2.new(0, 2, 0, 420),
                     Visible = Scope:Computed(function(use)
-                        return use(Part0AssemblyRootPartAnchored) and use(Part1AssemblyRootPartAnchored)
+                        return use(Part0Anchored) and use(Part1Anchored)
                     end),
-                    Text = Scope:Computed(function(use)
-                        if use(Part0Anchored) and use(Part1Anchored) then
-                            return "Both parts are anchored."
-                        end
-                        --"may be" is used because there is no check if the part is connected to a Motor6D as opposed to a weld.
-                        return "Both parts may be anchored."
-                    end),
+                    Text = "Both parts are anchored.",
                     TextColor3 = Enum.StudioStyleGuideColor.WarningText,
                     TextXAlignment = Enum.TextXAlignment.Center,
                 }),
