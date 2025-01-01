@@ -22,7 +22,6 @@ return function(Scope: CreateFusionScope.FusionScope, PropertyName: Fusion.UsedA
                     local CurrentObject = use(Object)
                     return CurrentObject and CurrentObject.Name or ""
                 end),
-                TextXAlignment = Enum.TextXAlignment.Left,
                 TextYAlignment = Enum.TextYAlignment.Center,
             }),
 

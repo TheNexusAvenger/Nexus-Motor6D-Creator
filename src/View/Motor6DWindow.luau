@@ -168,7 +168,6 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
                     Size = UDim2.new(0, 200, 0, 13),
                     Position = UDim2.new(0, 24, 0, (23 * 12) + 4),
                     Text = "Rotation relative to selected pivot.",
-                    TextXAlignment = Enum.TextXAlignment.Left,
                 }),
 
                 --Rotation buttons.
@@ -268,7 +267,6 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
                     Size = UDim2.new(0, 200, 0, 13),
                     Position = UDim2.new(0, 24, 0, 400),
                     Text = "Set the desired angle to spin forever.",
-                    TextXAlignment = Enum.TextXAlignment.Left,
                 }),
 
                 --Anchored part warning.
@@ -286,6 +284,7 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
                         return "Both parts may be anchored."
                     end),
                     TextColor3 = Enum.StudioStyleGuideColor.WarningText,
+                    TextXAlignment = Enum.TextXAlignment.Center,
                 }),
             },
         })

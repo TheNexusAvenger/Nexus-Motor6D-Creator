@@ -22,7 +22,6 @@ return function(Scope: CreateFusionScope.FusionScope, PropertyName: Fusion.UsedA
                         Size = UDim2.new(1, -4, 1, 0),
                         Position = UDim2.new(0, 4, 0, 0),
                         Text = PropertyName,
-                        TextXAlignment = Enum.TextXAlignment.Left,
                         TextYAlignment = Enum.TextYAlignment.Center,
                     }),
                 },
