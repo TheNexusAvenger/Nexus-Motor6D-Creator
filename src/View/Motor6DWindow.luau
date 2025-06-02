@@ -5,9 +5,7 @@ local Workspace = game:GetService("Workspace")
 local ChangeHistoryService = game:GetService("ChangeHistoryService")
 
 local NexusMotor6DCreatorPlugin = script.Parent.Parent
-local Fusion = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Fusion"))
-local CreateCheckbox = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Input"):WaitForChild("CreateCheckbox"))
-local CreateFusionScope = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("CreateFusionScope"))
+local NexusPluginComponents = require(NexusMotor6DCreatorPlugin:WaitForChild("Packages"):WaitForChild("NexusPluginComponents"))
 local PointSelection = require(NexusMotor6DCreatorPlugin:WaitForChild("Geometry"):WaitForChild("PointSelection"))
 local Motor6DVisual = require(NexusMotor6DCreatorPlugin:WaitForChild("Geometry"):WaitForChild("Motor6DVisual"))
 local CreateHeaderRow = require(script.Parent:WaitForChild("Row"):WaitForChild("CreateHeaderRow"))
@@ -15,6 +13,9 @@ local CreateInstancePropertyRow = require(script.Parent:WaitForChild("Row"):Wait
 local CreateRotationButtonRow = require(script.Parent:WaitForChild("Row"):WaitForChild("CreateRotationButtonRow"))
 local CreateSliderPropertyRow = require(script.Parent:WaitForChild("Row"):WaitForChild("CreateSliderPropertyRow"))
 
+local CreateCheckbox = NexusPluginComponents.Input.CreateCheckbox
+local CreateFusionScope = NexusPluginComponents.CreateFusionScope
+local Fusion = NexusPluginComponents.Fusion
 local Children = Fusion.Children
 local OnEvent = Fusion.OnEvent
 
@@ -24,18 +25,18 @@ Motor6DWindow.__index = Motor6DWindow
 export type Motor6DWindow = {
     Window: DockWidgetPluginGui,
     Values: {
-        Part0: Fusion.Value<BasePart?>,
-        Part1: Fusion.Value<BasePart?>,
-        PivotPart: Fusion.Value<BasePart?>,
-        Motor6D: Fusion.Value<Motor6D?>,
-        PositionXOffset: Fusion.Value<number>,
-        PositionYOffset: Fusion.Value<number>,
-        PositionZOffset: Fusion.Value<number>,
-        RotationXAngle: Fusion.Value<number>,
-        RotationYAngle: Fusion.Value<number>,
-        MaxVelocity: Fusion.Value<number>,
-        UseLocalSpace: Fusion.Value<CreateCheckbox.CheckboxState>,
-        SetDesiredAngleInfinite: Fusion.Value<CreateCheckbox.CheckboxState>,
+        Part0: NexusPluginComponents.Value<BasePart?>,
+        Part1: NexusPluginComponents.Value<BasePart?>,
+        PivotPart: NexusPluginComponents.Value<BasePart?>,
+        Motor6D: NexusPluginComponents.Value<Motor6D?>,
+        PositionXOffset: NexusPluginComponents.Value<number>,
+        PositionYOffset: NexusPluginComponents.Value<number>,
+        PositionZOffset: NexusPluginComponents.Value<number>,
+        RotationXAngle: NexusPluginComponents.Value<number>,
+        RotationYAngle: NexusPluginComponents.Value<number>,
+        MaxVelocity: NexusPluginComponents.Value<number>,
+        UseLocalSpace: NexusPluginComponents.Value<NexusPluginComponents.CheckboxState>,
+        SetDesiredAngleInfinite: NexusPluginComponents.Value<NexusPluginComponents.CheckboxState>,
     },
 } & typeof(setmetatable({}, Motor6DWindow))
 
@@ -63,16 +64,16 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
     local RotationXAngle = Scope:Value(0)
     local RotationYAngle = Scope:Value(0)
     local MaxVelocity = Scope:Value(0)
-    local UseLocalSpace = Scope:Value("Checked" :: CreateCheckbox.CheckboxState) :: any --Luau typing doesn't seem to handle custom singleton instnaces in this use.
-    local SetDesiredAngleInfinite = Scope:Value("Unchecked" :: CreateCheckbox.CheckboxState) :: any --Luau typing doesn't seem to handle custom singleton instnaces in this use.
+    local UseLocalSpace = Scope:Value("Checked" :: NexusPluginComponents.CheckboxState) :: any --Luau typing doesn't seem to handle custom singleton instnaces in this use.
+    local SetDesiredAngleInfinite = Scope:Value("Unchecked" :: NexusPluginComponents.CheckboxState) :: any --Luau typing doesn't seem to handle custom singleton instnaces in this use.
 
     local ActivePivotPart = Scope:Computed(function(use)
         return use(PivotPart) or use(Part1)
     end)
-    local ActivePivotPartCFrame = Scope:ValueFromProperty(ActivePivotPart, "CFrame") :: Fusion.Value<CFrame?>
-    local ActivePivotPartSize = Scope:ValueFromProperty(ActivePivotPart, "Size") :: Fusion.Value<Vector3?>
-    local Part0CFrame = Scope:ValueFromProperty(Part0, "CFrame") :: Fusion.Value<CFrame?>
-    local Part1CFrame = Scope:ValueFromProperty(Part1, "CFrame") :: Fusion.Value<CFrame?>
+    local ActivePivotPartCFrame = Scope:ValueFromProperty(ActivePivotPart, "CFrame") :: NexusPluginComponents.Value<CFrame?>
+    local ActivePivotPartSize = Scope:ValueFromProperty(ActivePivotPart, "Size") :: NexusPluginComponents.Value<Vector3?>
+    local Part0CFrame = Scope:ValueFromProperty(Part0, "CFrame") :: NexusPluginComponents.Value<CFrame?>
+    local Part1CFrame = Scope:ValueFromProperty(Part1, "CFrame") :: NexusPluginComponents.Value<CFrame?>
     local C0 = Scope:Computed(function(use)
         local CurrentPart0CFrame = use(Part0CFrame) :: CFrame
         local CurrentActivePivotPartCFrame = use(ActivePivotPartCFrame) :: CFrame
@@ -91,8 +92,8 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
         if not CurrentPart0CFrame or not CurrentPart1CFrame then return CFrame.identity end
         return CurrentPart1CFrame:Inverse() * (CurrentPart0CFrame * use(C0))
     end)
-    local Part0Anchored = Scope:ValueFromProperty(Part0, "Anchored") :: Fusion.Value<boolean?>
-    local Part1Anchored = Scope:ValueFromProperty(Part1, "Anchored") :: Fusion.Value<boolean?>
+    local Part0Anchored = Scope:ValueFromProperty(Part0, "Anchored") :: NexusPluginComponents.Value<boolean?>
+    local Part1Anchored = Scope:ValueFromProperty(Part1, "Anchored") :: NexusPluginComponents.Value<boolean?>
 
     --Create the view.
     local CreateButtonEnabled = Scope:Computed(function(use)
@@ -282,7 +283,7 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
         })
 
         --Create the Motor6D visual.
-        local WindowVisible = Scope:ValueFromProperty(Window, "Enabled") :: Fusion.Value<boolean?>
+        local WindowVisible = Scope:ValueFromProperty(Window, "Enabled") :: NexusPluginComponents.Value<boolean?>
         Motor6DVisual.new(Scope, {
             Visible = Scope:Computed(function(use)
                 if not use(WindowVisible) then return false end

@@ -5,23 +5,23 @@ local CoreGui = game:GetService("CoreGui")
 local RunService = game:GetService("RunService")
 
 local NexusMotor6DCreatorPlugin = script.Parent.Parent
-local CreateFusionScope = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("CreateFusionScope"))
-local Fusion = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Fusion"))
+local NexusPluginComponents = require(NexusMotor6DCreatorPlugin:WaitForChild("Packages"):WaitForChild("NexusPluginComponents"))
 
+local Fusion = NexusPluginComponents.Fusion
 local Children = Fusion.Children
 
 local Motor6DVisual = {}
 Motor6DVisual.__index = Motor6DVisual
 
 export type Motor6DValues = {
-    Visible: Fusion.UsedAs<boolean>,
-    StartCFrame: Fusion.Value<CFrame?>,
-    C0: Fusion.UsedAs<CFrame>,
-    C1: Fusion.UsedAs<CFrame>,
-    MaxVelocity: Fusion.Value<number>,
+    Visible: NexusPluginComponents.UsedAs<boolean>,
+    StartCFrame: NexusPluginComponents.Value<CFrame?>,
+    C0: NexusPluginComponents.UsedAs<CFrame>,
+    C1: NexusPluginComponents.UsedAs<CFrame>,
+    MaxVelocity: NexusPluginComponents.Value<number>,
 }
 export type Motor6DVisual = {
-    Scope: CreateFusionScope.FusionScope,
+    Scope: NexusPluginComponents.FusionScope,
 } & typeof(setmetatable({}, Motor6DVisual))
 
 
@@ -29,9 +29,9 @@ export type Motor6DVisual = {
 --[[
 Creates the Motor6D visual.
 --]]
-function Motor6DVisual.new(ParentScope: CreateFusionScope.FusionScope, Values: Motor6DValues): Motor6DVisual
+function Motor6DVisual.new(ParentScope: NexusPluginComponents.FusionScope, Values: Motor6DValues): Motor6DVisual
     --Create the values.
-    local Scope = ParentScope:innerScope() :: CreateFusionScope.FusionScope
+    local Scope = ParentScope:innerScope() :: NexusPluginComponents.FusionScope
     local Visible = Values.Visible
     local StartCFrame = Values.StartCFrame
     local C0 = Values.C0

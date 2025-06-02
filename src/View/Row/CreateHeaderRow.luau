@@ -2,12 +2,12 @@
 --!strict
 
 local NexusMotor6DCreatorPlugin = script.Parent.Parent.Parent
-local CreateFusionScope = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("CreateFusionScope"))
-local Fusion = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Fusion"))
+local NexusPluginComponents = require(NexusMotor6DCreatorPlugin:WaitForChild("Packages"):WaitForChild("NexusPluginComponents"))
 
+local Fusion = NexusPluginComponents.Fusion
 local Children = Fusion.Children
 
-return function(Scope: CreateFusionScope.FusionScope, Text: Fusion.UsedAs<string>): Frame
+return function(Scope: NexusPluginComponents.FusionScope, Text: NexusPluginComponents.UsedAs<string>): Frame
     return Scope:Create("Frame")({
         Size = UDim2.new(1, -2, 0, 22),
         [Children] = {

@@ -5,9 +5,10 @@ local ChangeHistoryService = game:GetService("ChangeHistoryService")
 local Selection = game:GetService("Selection")
 
 local NexusMotor6DCreatorPlugin = script.Parent.Parent
-local Fusion = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Fusion"))
-local CreateFusionScope = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("CreateFusionScope"))
+local NexusPluginComponents = require(NexusMotor6DCreatorPlugin:WaitForChild("Packages"):WaitForChild("NexusPluginComponents"))
 
+local CreateFusionScope = NexusPluginComponents.CreateFusionScope
+local Fusion = NexusPluginComponents.Fusion
 local Children = Fusion.Children
 local OnEvent = Fusion.OnEvent
 

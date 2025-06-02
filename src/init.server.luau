@@ -3,9 +3,11 @@
 
 local Selection = game:GetService("Selection")
 
+local NexusPluginComponents = require(script:WaitForChild("Packages"):WaitForChild("NexusPluginComponents"))
 local Motor6DWindow = require(script:WaitForChild("View"):WaitForChild("Motor6DWindow"))
 local CreateWeldWindow = require(script:WaitForChild("View"):WaitForChild("CreateWeldWindow"))
-local CreatePluginToggleButton = require(script:WaitForChild("NexusPluginComponents"):WaitForChild("Input"):WaitForChild("Plugin"):WaitForChild("CreatePluginToggleButton"))
+
+local CreatePluginToggleButton = NexusPluginComponents.Input.Plugin.CreatePluginToggleButton
 
 
 

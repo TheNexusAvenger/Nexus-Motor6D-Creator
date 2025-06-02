@@ -6,10 +6,11 @@ local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
 
 local NexusMotor6DCreatorPlugin = script.Parent.Parent
-local CreateFusionScope = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("CreateFusionScope"))
-local Fusion = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Fusion"))
+local NexusPluginComponents = require(NexusMotor6DCreatorPlugin:WaitForChild("Packages"):WaitForChild("NexusPluginComponents"))
 local GetMouseTarget = require(NexusMotor6DCreatorPlugin:WaitForChild("Util"):WaitForChild("GetMouseTarget"))
 
+local CreateFusionScope = NexusPluginComponents.CreateFusionScope
+local Fusion = NexusPluginComponents.Fusion
 local Children = Fusion.Children
 local Out = Fusion.Out
 
@@ -17,13 +18,13 @@ local PointSelection = {}
 PointSelection.__index = PointSelection
 
 type PointData = {
-    CFrame: Fusion.UsedAs<CFrame>,
-    AbsoluteSize: Fusion.Value<Vector2>,
+    CFrame: NexusPluginComponents.UsedAs<CFrame>,
+    AbsoluteSize: NexusPluginComponents.Value<Vector2>,
 }
 export type PointSelection = {
-    Scope: CreateFusionScope.FusionScope,
-    AdornPart: Fusion.Value<BasePart?>,
-    SelectedPointIndex: Fusion.Value<number?>,
+    Scope: NexusPluginComponents.FusionScope,
+    AdornPart: NexusPluginComponents.Value<BasePart?>,
+    SelectedPointIndex: NexusPluginComponents.Value<number?>,
     Points: {PointData},
 } & typeof(setmetatable({}, PointSelection))
 
@@ -41,7 +42,7 @@ function PointSelection.new(): PointSelection
     })
 
     --Create the values for the adorned part.
-    local AdornPart = Scope:Value(nil) :: Fusion.Value<BasePart?>
+    local AdornPart = Scope:Value(nil) :: NexusPluginComponents.Value<BasePart?>
     local AdornPartCFrame = Scope:Value(CFrame.identity)
     local AdornPartSize = Scope:Value(Vector3.zero)
     local AdornPartConnections = {} :: {RBXScriptConnection}
@@ -72,7 +73,7 @@ function PointSelection.new(): PointSelection
 
     --Create the points.
     local Points = {}
-    local SelectedPointIndex = Scope:Value(nil) :: Fusion.Value<number?>
+    local SelectedPointIndex = Scope:Value(nil) :: NexusPluginComponents.Value<number?>
     for X = -0.5, 0.5, 0.5 do
         for Y = -0.5, 0.5, 0.5 do
             for Z = -0.5, 0.5, 0.5 do

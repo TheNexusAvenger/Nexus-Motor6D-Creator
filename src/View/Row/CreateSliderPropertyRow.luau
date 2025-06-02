@@ -2,11 +2,11 @@
 --!strict
 
 local NexusMotor6DCreatorPlugin = script.Parent.Parent.Parent
-local CreateFusionScope = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("CreateFusionScope"))
-local Fusion = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Fusion"))
-local CreateSlider = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Input"):WaitForChild("CreateSlider"))
+local NexusPluginComponents = require(NexusMotor6DCreatorPlugin:WaitForChild("Packages"):WaitForChild("NexusPluginComponents"))
 local CreateBasePropertyRow = require(NexusMotor6DCreatorPlugin:WaitForChild("View"):WaitForChild("Row"):WaitForChild("CreateBasePropertyRow"))
 
+local CreateSlider = NexusPluginComponents.Input.CreateSlider
+local Fusion = NexusPluginComponents.Fusion
 local OnEvent = Fusion.OnEvent
 local Out = Fusion.Out
 
@@ -23,7 +23,7 @@ end
 
 
 
-return function(Scope: CreateFusionScope.FusionScope, PropertyName: Fusion.UsedAs<string>, Value: Fusion.Value<number>, Range: Fusion.UsedAs<NumberRange>?): Frame
+return function(Scope: NexusPluginComponents.FusionScope, PropertyName: NexusPluginComponents.UsedAs<string>, Value: NexusPluginComponents.Value<number>, Range: NexusPluginComponents.UsedAs<NumberRange>?): Frame
     local Focused = Scope:Value(false)
     local TextBoxText = Scope:Value(tostring(Fusion.peek(Value)))
     Scope:Observer(Value):onBind(function()

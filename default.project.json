@@ -2,8 +2,8 @@
     "name": "NexusMotor6DCreatorPlugin",
     "tree": {
         "$path": "src",
-        "NexusPluginComponents": {
-            "$path": "module/Nexus-Plugin-Components/"
+        "Packages": {
+            "$path": "./Packages"
         }
     }
 }

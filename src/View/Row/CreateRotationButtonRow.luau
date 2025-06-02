@@ -2,9 +2,9 @@
 --!strict
 
 local NexusMotor6DCreatorPlugin = script.Parent.Parent.Parent
-local CreateFusionScope = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("CreateFusionScope"))
-local Fusion = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Fusion"))
+local NexusPluginComponents = require(NexusMotor6DCreatorPlugin:WaitForChild("Packages"):WaitForChild("NexusPluginComponents"))
 
+local Fusion = NexusPluginComponents.Fusion
 local Children = Fusion.Children
 local OnEvent = Fusion.OnEvent
 
@@ -13,7 +13,7 @@ local OnEvent = Fusion.OnEvent
 --[[
 Adds an angle to the given value.
 --]]
-local function AddAngle(Angle: number, Value: Fusion.Value<number>): ()
+local function AddAngle(Angle: number, Value: NexusPluginComponents.Value<number>): ()
     local NewValue = ((Fusion.peek(Value) + 180 + Angle) % 360) - 180
     if NewValue == -180 then
         NewValue = 180
@@ -23,7 +23,7 @@ end
 
 
 
-return function(Scope: CreateFusionScope.FusionScope, AxisName: string, Value: Fusion.Value<number>): Frame
+return function(Scope: NexusPluginComponents.FusionScope, AxisName: string, Value: NexusPluginComponents.Value<number>): Frame
     return Scope:Create("Frame")({
         BackgroundTransparency = 1,
         Size = UDim2.new(1, -2, 0, 20),

@@ -2,14 +2,14 @@
 --!strict
 
 local NexusMotor6DCreatorPlugin = script.Parent.Parent.Parent
-local CreateFusionScope = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("CreateFusionScope"))
-local Fusion = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Fusion"))
+local NexusPluginComponents = require(NexusMotor6DCreatorPlugin:WaitForChild("Packages"):WaitForChild("NexusPluginComponents"))
 local PartSelection = require(NexusMotor6DCreatorPlugin:WaitForChild("Geometry"):WaitForChild("PartSelection"))
 local CreateBasePropertyRow = require(NexusMotor6DCreatorPlugin:WaitForChild("View"):WaitForChild("Row"):WaitForChild("CreateBasePropertyRow"))
 
+local Fusion = NexusPluginComponents.Fusion
 local OnEvent = Fusion.OnEvent
 
-return function(Scope: CreateFusionScope.FusionScope, PropertyName: Fusion.UsedAs<string>, Plugin: Plugin?, Object: Fusion.Value<BasePart?>): Frame
+return function(Scope: NexusPluginComponents.FusionScope, PropertyName: NexusPluginComponents.UsedAs<string>, Plugin: Plugin?, Object: NexusPluginComponents.Value<BasePart?>): Frame
     local Selecting = Scope:Value(false)
     local ToggleSelectionButtonTextColor = Scope:PluginColor(Enum.StudioStyleGuideColor.MainText)
     local CurrentPartSelection: PartSelection.PartSelection? = nil

@@ -1,0 +1,16 @@
+[package]
+name = "thenexusavenger/nexus-motor6d-creator"
+repository = "https://github.com/TheNexusAvenger/Nexus-Motor6D-Creator"
+description = "Roblox plugin for creating Motor6Ds."
+license = "MIT"
+authors = ["TheNexusAvenger"]
+version = "1.1.1"
+
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+exclude = ["**"]
+include = ["src", "src/*", "default.project.json", "wally.lock", "wally.toml"]
+
+[dependencies]
+NexusPluginComponents = "thenexusavenger/nexus-plugin-components@1.2.0"

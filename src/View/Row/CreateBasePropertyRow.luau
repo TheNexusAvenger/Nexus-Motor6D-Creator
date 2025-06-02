@@ -4,12 +4,12 @@
 local BASE_PROPERTY_WIDTH = 80
 
 local NexusMotor6DCreatorPlugin = script.Parent.Parent.Parent
-local CreateFusionScope = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("CreateFusionScope"))
-local Fusion = require(NexusMotor6DCreatorPlugin:WaitForChild("NexusPluginComponents"):WaitForChild("Fusion"))
+local NexusPluginComponents = require(NexusMotor6DCreatorPlugin:WaitForChild("Packages"):WaitForChild("NexusPluginComponents"))
 
+local Fusion = NexusPluginComponents.Fusion
 local Children = Fusion.Children
 
-return function(Scope: CreateFusionScope.FusionScope, PropertyName: Fusion.UsedAs<string>, CreateValueFrames: () -> ({Instance})): Frame
+return function(Scope: NexusPluginComponents.FusionScope, PropertyName: NexusPluginComponents.UsedAs<string>, CreateValueFrames: () -> ({Instance})): Frame
     return Scope:Create("Frame")({
         Size = UDim2.new(1, -2, 0, 22),
         [Children] = {
