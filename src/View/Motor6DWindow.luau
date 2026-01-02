@@ -297,8 +297,8 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
         } :: Motor6DVisual.Motor6DValues)
     end)
 
-    --Create and return the object.
-    return setmetatable({
+    --Create the object.
+    local self = setmetatable({
         Window = Window,
         Values = {
             Part0 = Part0,
@@ -315,30 +315,49 @@ function Motor6DWindow.new(Plugin: Plugin): Motor6DWindow
             SetDesiredAngleInfinite = UseLocalSpace,
         },
     }, Motor6DWindow) :: Motor6DWindow
+
+    --Recalculate the Motor6D when the parts change.
+    Scope:Observer(Part0):onChange(function()
+        self:_UpdateMotor6DReference(Fusion.peek(self.Values.Part0), Fusion.peek(self.Values.Part1))
+    end)
+    Scope:Observer(Part1):onChange(function()
+        self:_UpdateMotor6DReference(Fusion.peek(self.Values.Part0), Fusion.peek(self.Values.Part1))
+    end)
+
+    --Return the object.
+    return self
+end
+
+--[[
+Updates the Motor6D reference from the current parts.
+--]]
+function Motor6DWindow._UpdateMotor6DReference(self: Motor6DWindow, Part0: BasePart?, Part1: BasePart?): (BasePart?, BasePart?, Motor6D?)
+    local ExistingMotor6D = nil
+    if Part0 and Part1 then
+        for _, Motor6D in Workspace:GetDescendants() do
+            if not Motor6D:IsA("Motor6D") then continue end
+            if not ((Motor6D.Part0 == Part0 and Motor6D.Part1 == Part1) or (Motor6D.Part0 == Part1 and Motor6D.Part1 == Part0)) then continue end
+            Part0 = Motor6D.Part0
+            Part1 = Motor6D.Part1
+            ExistingMotor6D = Motor6D
+            break
+        end
+    end
+    self.Values.Motor6D:set(ExistingMotor6D)
+    return Part0, Part1, ExistingMotor6D
 end
 
 --[[
 Loads 2 parts.
 --]]
-function Motor6DWindow.LoadParts(self: Motor6DWindow, Part0: BasePart?, Part1: BasePart?): ()
-    --Update the selected motor.
-    if Part0 and Part1 then
-        for _, Motor6D in Workspace:GetDescendants() do
-            if not Motor6D:IsA("Motor6D") then continue end
-            if not ((Motor6D.Part0 == Part0 and Motor6D.Part1 == Part1) or (Motor6D.Part0 == Part1 and Motor6D.Part1 == Part0)) then continue end
-            self.Values.Motor6D:set(Motor6D)
-            Part0 = Motor6D.Part0
-            Part1 = Motor6D.Part1
-            break
-        end
-    end
-
+function Motor6DWindow.LoadParts(self: Motor6DWindow, InitialPart0: BasePart?, InitialPart1: BasePart?): ()
     --Set the selected parts.
+    local Part0, Part1, CurrentMotor = self:_UpdateMotor6DReference(InitialPart0, InitialPart1)
     self.Values.Part0:set(Part0)
-    self.Values.Part1:set(Part1)
+    self.Values.Part1:set(Part1)    
 
     --Set the sliders.
-    local CurrentMotor = Fusion.peek(self.Values.Motor6D)
+    --Part0 and Part1 are updated in case the motor update flipped them.
     if CurrentMotor and Part0 and Part1 then
         --Determine the relative part.
         local PivotPart = nil
